@@ -27,7 +27,7 @@ to install [noble: A Node.js BLE (Bluetooth Low Energy)](https://github.com/sand
 On your console,
 
 1. ```cd /path/to/nuimo-manager```
-1. ```cp nuimo_config_example.txt nuimo_config.txt```
+1. ```cp config/nuimo_config_example.txt config/nuimo_config.txt```
 1. Turn on your nuimo.
 1. Run ```sbt run```
 1. Confirm the UUID of your nuimo on the console.
