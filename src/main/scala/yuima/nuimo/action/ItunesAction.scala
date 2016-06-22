@@ -9,7 +9,7 @@ object ItunesAction {
   def playpause = {
     val cmd =
       """tell application "iTunes"
-        |      playpause
+        |  playpause
         |end tell
       """.stripMargin
     NuimoManager.runAppleScript(cmd)
@@ -18,7 +18,7 @@ object ItunesAction {
   def activate = {
     val cmd =
       """tell application "iTunes"
-        | activate
+        |  activate
         |end tell
       """.stripMargin
     NuimoManager.runAppleScript(cmd)
@@ -29,9 +29,9 @@ object ItunesAction {
       """set prevApp to (path to frontmost application as text)
         |
         |tell application "iTunes"
-        | activate
-        | set shuffle enabled to true
-        |	play playlist (item 1 of (choose from list (get name of playlists as list)))
+        |  activate
+        |  set shuffle enabled to true
+        |	 play playlist (item 1 of (choose from list (get name of playlists as list)))
         |end tell
         |
         |tell application prevApp to activate
@@ -42,16 +42,16 @@ object ItunesAction {
   def choosePlayList = {
     val cmd =
       """tell application "iTunes"
-        |	set plists to (get name of playlists as list)
+        |	 set plists to (get name of playlists as list)
         |end tell
         |
         |activate
         |choose from list (plists) with prompt "Choose a playlist"
         |
         |if result is not false then
-        |	tell application "iTunes"
-        |		play playlist (item 1 of result)
-        |	end tell
+        |	 tell application "iTunes"
+        |    play playlist (item 1 of result)
+        |  end tell
         |end if
       """.stripMargin
     NuimoManager.runAppleScript(cmd)
@@ -69,28 +69,28 @@ object ItunesAction {
 
     val resolution = getSoundVolume min 40
     val cmd =
-      s"""property resolution : $resolution (* Increase for smoother fades. Default: 10 *)
-          |property delayIncr : ${duration / resolution} (* Decrease for faster fades. Default: 0.2 *)
+      s"""property resolution : $resolution
+          |property delayIncr : ${ duration / resolution }
           |tell application "iTunes"
-          |    set originalVol to sound volume
-          |    set volIncr to originalVol div resolution
-          |    if player state is not playing then
-          |        set sound volume to 0
-          |        play
-          |        -- Fade in
-          |        repeat while (sound volume ≤ (originalVol - volIncr))
-          |            set sound volume to (sound volume + volIncr)
-          |            delay delayIncr
-          |        end repeat
-          |    else
-          |        -- Fade out
-          |        repeat while (sound volume > 0)
-          |            set sound volume to (sound volume - volIncr)
-          |            delay delayIncr
-          |        end repeat
-          |        pause
-          |    end if
-          |    set sound volume to originalVol
+          |  set originalVol to sound volume
+          |  set volIncr to originalVol div resolution
+          |  if player state is not playing then
+          |    set sound volume to 0
+          |    play
+          |    -- Fade in
+          |    repeat while (sound volume ≤ (originalVol - volIncr))
+          |      set sound volume to (sound volume + volIncr)
+          |      delay delayIncr
+          |    end repeat
+          |  else
+          |    -- Fade out
+          |    repeat while (sound volume > 0)
+          |      set sound volume to (sound volume - volIncr)
+          |      delay delayIncr
+          |    end repeat
+          |    pause
+          |  end if
+          |  set sound volume to originalVol
           |end tell
       """.stripMargin
     NuimoManager.runAppleScriptSync(cmd)
@@ -99,7 +99,7 @@ object ItunesAction {
   def getSoundVolume = {
     NuimoManager.runAppleScriptSync(
       """tell application "iTunes"
-        |	return sound volume
+        |	 return sound volume
         |end tell
       """.stripMargin).toInt
   }
@@ -121,7 +121,7 @@ object ItunesAction {
     NuimoManager.writeLedImage(uuid, LedImage.backward)
     val cmd =
       """tell application "iTunes"
-        |      back track
+        |  back track
         |end tell
       """.stripMargin
     NuimoManager.runAppleScript(cmd)
@@ -140,30 +140,30 @@ object ItunesAction {
   def notifyCurrentTrack = {
     val cmd =
       """tell application "iTunes"
-        |	set trackName to name of current track
-        |	set trackArtist to artist of current track
-        |	set trackAlbum to album of current track
-        |	set trackTime to time of current track
-        |	set trackPosition to player position
+        |	 set trackName to name of current track
+        |	 set trackArtist to artist of current track
+        |	 set trackAlbum to album of current track
+        |	 set trackTime to time of current track
+        |	 set trackPosition to player position
         |
-        |	set min to "0"
-        |	set sec to "00"
-        |	if 59 < trackPosition then
-        |		set min to trackPosition div 60
-        |		set sec to round (trackPosition mod 60)
-        |	else
-        |		set min to "0"
-        |		set sec to round (trackPosition)
-        |	end if
+        |	 set min to "0"
+        |	 set sec to "00"
+        |	 if 59 < trackPosition then
+        |	   set min to trackPosition div 60
+        |	   set sec to round (trackPosition mod 60)
+        |	 else
+        |	   set min to "0"
+        |	   set sec to round (trackPosition)
+        |	 end if
         |
-        |	if sec < 10 then
-        |		set sec to "0" & sec
-        |	end if
+        |	 if sec < 10 then
+        |	   set sec to "0" & sec
+        |	 end if
         |
-        |	set currentTime to (min & ":" & sec as text)
+        |	 set currentTime to (min & ":" & sec as text)
         |
-        |	set str to trackArtist & " - " & trackAlbum & return & currentTime & " / " & trackTime
-        |	display notification str with title trackName
+        |	 set str to trackArtist & " - " & trackAlbum & return & currentTime & " / " & trackTime
+        |	 display notification str with title trackName
         |end tell
       """.stripMargin
     NuimoManager.runAppleScript(cmd)
