@@ -28,8 +28,8 @@ On your console,
 
 1. ```cd /path/to/nuimo-manager```
 1. ```cp config/nuimo_config_example.txt config/nuimo_config.txt```
-1. Turn on your nuimo.
 1. Run ```sbt run```
+1. Turn on your nuimo.
 1. Confirm the UUID of your nuimo on the console.
 1. Paste the UUID on `config/nuimo_config.txt`
 1. Type ```Ctrl-C``` to stop nuimo-manager
