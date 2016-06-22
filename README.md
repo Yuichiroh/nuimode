@@ -2,9 +2,9 @@
 
 A Scala library for customizing NUIMO on OSX.
 
-You can implement your own event handler for each particular application by implementing `NuimoHandler` trait.
-The library provides some useful methods for sending keystrokes and executing applescript.
-It is implemented using Scala.js and intended for developers using Scala language.
+* You can implement your own nuimo event handler for each particular application by extending a `NuimoHandler` trait.
+* You can easily define a flexible action using a powerful Scala language.
+* The library provides some useful methods for sending keystrokes and executing applescript.
 
 The software includes some example handlers:
 * Volume controller (DefaultHandler)
@@ -12,6 +12,8 @@ The software includes some example handlers:
 * Google chrome YouTube controller (GoogleChromeHandler)
 * Adobe Lightroom controller (LightroomHandler)
 * Microsoft Power Point controller (PowerPointHandler)
+
+The library is implemented using Scala.js and intended for developers using Scala language.
 
 # Setup
 1. Install
