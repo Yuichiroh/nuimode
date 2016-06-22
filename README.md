@@ -69,7 +69,7 @@ Finally, you assign the handler to the application name on `config/nuimo_config.
       "Microsoft PowerPoint.app": "PowerPoint",
       "Adobe Lightroom.app": "Lightroom",
       "Google Chrome.app": "GoogleChrome",
-      "Safari.app": "Safari",
+      "Safari.app": "Safari"
     }
   }
 ]
