@@ -18,14 +18,6 @@ scalaJSStage in Global := FullOptStage
 
 libraryDependencies += "com.lihaoyi" %%% "upickle" % "0.4.1"
 
-//val circeVersion = "0.4.1"
-
-//libraryDependencies ++= Seq(
-//  "io.circe" %% "circe-core",
-//  "io.circe" %% "circe-generic",
-//  "io.circe" %% "circe-parser"
-//).map(_ % circeVersion)
-
 skip in packageJSDependencies := false
 
 jsDependencies += ProvidedJS / "js/io.js"
@@ -44,6 +36,6 @@ jsDependencies += ProvidedJS / "js/applescript-parser.js"
 
 //testFrameworks += new TestFramework("utest.runner.Framework")
 
-//persistLauncher in Compile := true
+persistLauncher in Compile := false
 
 persistLauncher in Test := false
