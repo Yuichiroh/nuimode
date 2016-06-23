@@ -1,4 +1,3 @@
-
 /*
  this script is forked from:
  https://github.com/brendonparker/nuimo-node-demo
@@ -33,15 +32,19 @@ nuimo = function () {
     battery = {};
 
     var SERVICES = {
-        BATTERY_STATUS: '0000180f00001000800000805f9b34fb',
-        DEVICE_INFORMATION: '0000180a00001000800000805f9b34fb',
+        // BATTERY_STATUS: '0000180f00001000800000805f9b34fb',
+        BATTERY_STATUS: '180F',
+        // DEVICE_INFORMATION: '0000180a00001000800000805f9b34fb',
+        DEVICE_INFORMATION: '180A',
         LED_MATRIX: 'f29b1523cb1940f3be5c7241ecb82fd1',
         USER_INPUT: 'f29b1525cb1940f3be5c7241ecb82fd2'
     };
 
     var CHARACTERISTICS = {
-        BATTERY: '00002a1900001000800000805f9b34fb',
-        DEVICE_INFO: '00002a2900001000800000805f9b34fb',
+        // BATTERY: '00002a1900001000800000805f9b34fb',
+        BATTERY: '2a19',
+        // DEVICE_INFO: '00002a2900001000800000805f9b34fb',
+        DEVICE_INFO: '2a29',
         LED_MATRIX: 'f29b1524cb1940f3be5c7241ecb82fd1',
         ROTATION: 'f29b1528cb1940f3be5c7241ecb82fd2',
         BUTTON_CLICK: 'f29b1529cb1940f3be5c7241ecb82fd2',
@@ -63,10 +66,12 @@ nuimo = function () {
     };
 
     this.batteryStatus = function (uuid) {
-        console.log(battery[uuid]);
-        if (battery[uuid])
-            return battery[uuid].read();
-        else return 0;
+        if (battery[uuid]) {
+            battery[uuid].read((error, data) =>
+                yuima.nuimo.NuimoManager().printBatteryStatus(uuid, data[0])
+            );
+        }
+        else yuima.nuimo.NuimoManager().printBatteryStatus(uuid, 0);
     };
 
     function createDataForLedMatrix(data, brightness, duration) {
@@ -103,7 +108,6 @@ nuimo = function () {
     }
 
     this.init = function (uuids) {
-        // handlers = yuima.nuimo.NuimoManager().handlers;
         noble.on('stateChange', state => {
             if (state === 'poweredOn')
                 return noble.startScanning(['180F', '180A'], false);
@@ -118,7 +122,6 @@ nuimo = function () {
             if (uuids.indexOf(p.uuid) > -1) {
                 p.connect(err => {
                     if (err) return;
-                    yuima.nuimo.NuimoManager().handler(p.uuid, EVENTS.CONNECTED);
                     p.discoverServices([SERVICES.DEVICE_INFORMATION, SERVICES.BATTERY_STATUS, SERVICES.LED_MATRIX, SERVICES.USER_INPUT], (err, services) => {
                         for (var service of services) {
                             var nuimoChars = Object.keys(CHARACTERISTICS).map(prop => CHARACTERISTICS[prop]);
@@ -128,8 +131,8 @@ nuimo = function () {
                                         ledMatrix[p.uuid] = c;
                                     }
                                     else if (c.uuid === CHARACTERISTICS.BATTERY) {
-                                        console.log('set battery');
                                         battery[p.uuid] = c;
+                                        this.batteryStatus(p.uuid);
                                     }
                                     if (c.properties.indexOf('notify') > -1) {
                                         c.on('read', (data, isNotification) => {
@@ -138,11 +141,11 @@ nuimo = function () {
                                         c.notify(true);
                                     } else if (c.properties.indexOf('write') > -1) {
                                         yuima.nuimo.NuimoManager().handler(p.uuid, c.uuid);
-                                        // handlers[c.uuid](c);
                                     }
                                 });
                             });
                         }
+                        yuima.nuimo.NuimoManager().handler(p.uuid, EVENTS.CONNECTED);
                     });
                 });
             }

@@ -17,7 +17,7 @@ trait NuimoHandler {
   def onConnect(uuid: String) = {
     val name = NuimoManager.uuid2config(uuid).name
     println(s"Connected!: $name")
-    println("Battery: " + NuimoManager.batteryStatus(uuid))
+//    NuimoManager.showBatteryStatus(uuid)
     SystemAction.sendNotification(name, "Connected!")
   }
 
@@ -53,7 +53,10 @@ trait NuimoHandler {
 
     action match {
       case NuimoEvent.Click.PRESS => onPress(uuid)
-      case NuimoEvent.Click.RELEASE => onRelease(uuid)
+      case NuimoEvent.Click.RELEASE =>
+        println(NuimoManager.appName)
+        NuimoManager.showBatteryStatus(uuid)
+        onRelease(uuid)
     }
   }
 
