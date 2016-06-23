@@ -63,7 +63,12 @@ object NuimoManager extends JSApp {
     System.nanoTime() - lastEventTimeStamp > interval
   }
 
-  def batteryStatus(uuid: String) = nuimo.batteryStatus(uuid)
+  def showBatteryStatus(uuid: String) = nuimo.batteryStatus(uuid)
+
+  @JSExport
+  def printBatteryStatus(uuid: String, voltage:Int) = {
+    println(s"""Battery: $voltage %""")
+  }
 
   def writeLedImage(uuid: String, img: LedImage) =
     nuimo.writeToLEDs(uuid, img.state.toJSArray, img.brightness, img.duration)
