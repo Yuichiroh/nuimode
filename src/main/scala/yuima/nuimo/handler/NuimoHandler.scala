@@ -17,7 +17,6 @@ trait NuimoHandler {
   def onConnect(uuid: String) = {
     val name = NuimoManager.uuid2config(uuid).name
     println(s"Connected!: $name")
-    println("Battery: " + NuimoManager.batteryStatus(uuid))
     SystemAction.sendNotification(name, "Connected!")
   }
 
@@ -53,7 +52,9 @@ trait NuimoHandler {
 
     action match {
       case NuimoEvent.Click.PRESS => onPress(uuid)
-      case NuimoEvent.Click.RELEASE => onRelease(uuid)
+      case NuimoEvent.Click.RELEASE =>
+        println(NuimoManager.appName)
+        onRelease(uuid)
     }
   }
 
@@ -81,13 +82,15 @@ trait NuimoHandler {
   def onFly(uuid: String, data: Any) = {
     val signal = data.asInstanceOf[js.Array[Int]](0)
     val direction = NuimoEvent.Fly(signal)
-
     direction match {
       case NuimoEvent.Fly.LEFT => onFlyLeft(uuid)
       case NuimoEvent.Fly.RIGHT => onFlyRight(uuid)
       case NuimoEvent.Fly.BACKWARDS => onFlyBackwards(uuid)
       case NuimoEvent.Fly.TOWARDS => onFlyTowards(uuid)
-      case NuimoEvent.Fly.HOVER => onFlyHover(uuid)
+      case NuimoEvent.Fly.HOVER =>
+        if (NuimoManager.hasSufficientEventInterval)
+          NuimoManager.showBatteryStatus(uuid)
+        onFlyHover(uuid)
     }
   }
 

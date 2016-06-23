@@ -96,7 +96,6 @@ class DefaultHandler extends NuimoHandler {
   override def onFlyHover(uuid: String): Unit = {}
 
   override def onRelease(uuid: String): Unit = {
-    println(NuimoManager.appName)
     ItunesAction.fadeInOut(uuid)
   }
 
