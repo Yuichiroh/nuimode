@@ -32,14 +32,14 @@ nuimo = function () {
     ledMatrix = {};
     battery = {};
 
-    const SERVICES = {
+    var SERVICES = {
         BATTERY_STATUS: '0000180f00001000800000805f9b34fb',
         DEVICE_INFORMATION: '0000180a00001000800000805f9b34fb',
         LED_MATRIX: 'f29b1523cb1940f3be5c7241ecb82fd1',
         USER_INPUT: 'f29b1525cb1940f3be5c7241ecb82fd2'
     };
 
-    const CHARACTERISTICS = {
+    var CHARACTERISTICS = {
         BATTERY: '00002a1900001000800000805f9b34fb',
         DEVICE_INFO: '00002a2900001000800000805f9b34fb',
         LED_MATRIX: 'f29b1524cb1940f3be5c7241ecb82fd1',
@@ -67,7 +67,7 @@ nuimo = function () {
         if (battery[uuid])
             return battery[uuid].read();
         else return 0;
-    }
+    };
 
     function createDataForLedMatrix(data, brightness, duration) {
         if (arguments.length != 3) {
@@ -124,10 +124,10 @@ nuimo = function () {
                             var nuimoChars = Object.keys(CHARACTERISTICS).map(prop => CHARACTERISTICS[prop]);
                             service.discoverCharacteristics(nuimoChars, (err, characteristics) => {
                                 characteristics.forEach(c => {
-                                    if (c.uuid == CHARACTERISTICS.LED_MATRIX) {
+                                    if (c.uuid === CHARACTERISTICS.LED_MATRIX) {
                                         ledMatrix[p.uuid] = c;
                                     }
-                                    else if (c.uuid == CHARACTERISTICS.BATTERY) {
+                                    else if (c.uuid === CHARACTERISTICS.BATTERY) {
                                         console.log('set battery');
                                         battery[p.uuid] = c;
                                     }
