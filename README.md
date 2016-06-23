@@ -17,7 +17,7 @@ The library is implemented using Scala.js and intended for developers using Scal
 
 # Setup
 1. Install
-    * [A recent version of Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+    * [a recent version of Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
     * [sbt](http://www.scala-sbt.org/)
     * [node.js](https://nodejs.org/en/)
     * Xcode
@@ -59,7 +59,7 @@ val id2handler = Map(
    HandlerID.Safari -> SafariHandler
 )
 ```
-Finally, you assign the handler to the application name on `config/nuimo_config.txt` as:
+Finally, you assign the application name to the handler on `config/nuimo_config.txt` as:
 ```json
 [
   {
