@@ -3,6 +3,7 @@
  https://github.com/TooTallNate/node-applescript
 
  Copyright (c) 2010 Nathan Rajlich
+ Copyright (c) 2016 Yuichiroh Matsubayashi
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
@@ -30,16 +31,15 @@
 // osascript invocation. It reads the fist char of the string to determine
 // the data-type of the result, and creates the appropriate type parser.
 exports.parse = function(str) {
-    if (str.length == 0) {
+    if (str.length === 0) {
         return;
     }
 
-    var rtn = parseFromFirstRemaining.call({
+    return parseFromFirstRemaining.call({
         value: str,
         index: 0
     });
-    return rtn;
-}
+};
 
 // Attemps to determine the data type of the next part of the String to
 // parse. The 'this' value has a Object with 'value' as the AppleScript
@@ -50,17 +50,15 @@ function parseFromFirstRemaining() {
     switch(cur) {
         case '{':
             return exports.ArrayParser.call(this);
-            break;
         case '"':
             return exports.StringParser.call(this);
-            break;
         case 'a':
-            if (this.value.substring(this.index, this.index+5) == 'alias') {
+            if (this.value.substring(this.index, this.index+5) === 'alias') {
                 return exports.AliasParser.call(this);
             }
             break;
         case '«':
-            if (this.value.substring(this.index, this.index+5) == '«data') {
+            if (this.value.substring(this.index, this.index+5) === '«data') {
                 return exports.DataParser.call(this);
             }
             break;
@@ -73,23 +71,26 @@ function parseFromFirstRemaining() {
 
 // Parses an AppleScript "alias", which is really just a reference to a
 // location on the filesystem, but formatted kinda weirdly.
+/**
+ * @return {string}
+ */
 exports.AliasParser = function() {
     this.index += 6;
     return "/Volumes/" + exports.StringParser.call(this).replace(/:/g, "/");
-}
+};
 
 // Parses an AppleScript Array. Which looks like {}, instead of JavaScript's [].
 exports.ArrayParser = function() {
     var rtn = [],
         cur = this.value[++this.index];
-    while (cur != '}') {
+    while (cur !== '}') {
         rtn.push(parseFromFirstRemaining.call(this));
-        if (this.value[this.index] == ',') this.index += 2;
+        if (this.value[this.index] === ',') this.index += 2;
         cur = this.value[this.index];
     }
     this.index++;
     return rtn;
-}
+};
 
 // Parses «data » results into native Buffer instances.
 exports.DataParser = function() {
@@ -104,22 +105,28 @@ exports.DataParser = function() {
     }
     buf.type = type;
     return buf;
-}
+};
 
 // Parses an AppleScript Number into a native JavaScript Number instance.
+/**
+ * @return {number}
+ */
 exports.NumberParser = function() {
     return Number(exports.UndefinedParser.call(this));
-}
+};
 
 // Parses a standard AppleScript String. Which starts and ends with "" chars.
 // The \ char is the escape character, so anything after that is a valid part
 // of the resulting String.
-exports.StringParser = function(str) {
+/**
+ * @return {string}
+ */
+exports.StringParser = function () {
     var rtn = "",
         end = ++this.index,
         cur = this.value[end++];
-    while(cur != '"') {
-        if (cur == '\\') {
+    while(cur !== '"') {
+        if (cur === '\\') {
             rtn += this.value.substring(this.index, end-1);
             this.index = end++;
         }
@@ -128,12 +135,15 @@ exports.StringParser = function(str) {
     rtn += this.value.substring(this.index, end-1);
     this.index = end;
     return rtn;
-}
+};
 
 // When the "parseFromFirstRemaining" function can't figure out the data type
 // of "str", then the UndefinedParser is used. It crams everything it sees
 // into a String, until it finds a ',' or a '}' or it reaches the end of data.
 var END_OF_TOKEN = /}|,|\n/;
+/**
+ * @return {string}
+ */
 exports.UndefinedParser = function() {
     var end = this.index, cur = this.value[end++];
     while (!END_OF_TOKEN.test(cur)) {
@@ -142,4 +152,4 @@ exports.UndefinedParser = function() {
     var rtn = this.value.substring(this.index, end-1);
     this.index = end-1;
     return rtn;
-}
+};
