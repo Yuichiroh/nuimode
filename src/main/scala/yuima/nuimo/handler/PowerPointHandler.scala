@@ -45,7 +45,6 @@ object PowerPointHandler extends NuimoHandler {
           |end tell
         """.stripMargin
       ).runScriptSync.toBoolean
-    println(_isSlideShowMode)
     _isSlideShowMode
   }
 
@@ -79,7 +78,6 @@ object PowerPointHandler extends NuimoHandler {
     if (hasSufficientActionInterval && math.abs(totalVelocity) > sensitivity) {
       isSlideShowMode match {
         case true =>
-          println(_isSlideShowMode, isPressed)
           if (isPressed)
             KeyCodes(Seq.fill(math.abs(totalVelocity) / sensitivity)(keyOnSlideShow)).runScript
           else {}
