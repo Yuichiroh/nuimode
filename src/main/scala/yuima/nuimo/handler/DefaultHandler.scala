@@ -10,6 +10,7 @@ class DefaultHandler extends NuimoHandler {
 
   override val leftRotationSensitivity: Int = 12
   override val rightRotationSensitivity: Int = 12
+  override val actionSpeed: Int = 10
 
   override def onPress(uuid: String) = {}
 
