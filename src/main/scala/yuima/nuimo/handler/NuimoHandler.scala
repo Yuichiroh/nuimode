@@ -7,12 +7,10 @@ import yuima.nuimo.{NuimoEvent, NuimoManager}
 
 import scala.scalajs.js
 
-/** @author Yuichiroh Matsubayashi
-  *         Created on 2016/06/16.
-  */
 trait NuimoHandler {
   val leftRotationSensitivity: Int
   val rightRotationSensitivity: Int
+  var isPressed = false
 
   def onConnect(uuid: String) = {
     val name = NuimoManager.uuid2config(uuid).name
@@ -25,6 +23,25 @@ trait NuimoHandler {
     println(s"Disconnected: $name")
     SystemAction.sendNotification(name, "Disconnected.")
   }
+
+  def onClick(uuid: String, data: Any) = {
+    val signal = data.asInstanceOf[js.Array[Int]](0)
+    val action = NuimoEvent.Click(signal)
+
+    action match {
+      case NuimoEvent.Click.PRESS =>
+        isPressed = true
+        onPress(uuid)
+      case NuimoEvent.Click.RELEASE =>
+        println(NuimoManager.appName)
+        isPressed = false
+        onRelease(uuid)
+    }
+  }
+
+  def onPress(uuid: String): Unit
+
+  def onRelease(uuid: String): Unit
 
   def onSwipe(uuid: String, data: Any) = {
     val signal = data.asInstanceOf[js.Array[Int]](0)
@@ -46,22 +63,6 @@ trait NuimoHandler {
 
   def onSwipeDown(uuid: String): Unit
 
-  def onClick(uuid: String, data: Any) = {
-    val signal = data.asInstanceOf[js.Array[Int]](0)
-    val action = NuimoEvent.Click(signal)
-
-    action match {
-      case NuimoEvent.Click.PRESS => onPress(uuid)
-      case NuimoEvent.Click.RELEASE =>
-        println(NuimoManager.appName)
-        onRelease(uuid)
-    }
-  }
-
-  def onPress(uuid: String): Unit
-
-  def onRelease(uuid: String): Unit
-
   def onRotate(uuid: String, data: Any) = {
     val signals = data.asInstanceOf[js.Array[Int]].toArray
     val direction =
@@ -70,14 +71,24 @@ trait NuimoHandler {
     val velocity = signals(0) - signals(1)
 
     direction match {
-      case NuimoEvent.Rotate.LEFT => onRotateLeft(uuid, velocity)
-      case NuimoEvent.Rotate.RIGHT => onRotateRight(uuid, velocity)
+      case NuimoEvent.Rotate.LEFT =>
+        val vel = velocity / leftRotationSensitivity
+        if (isPressed) onPressRotateLeft(uuid, vel)
+        else onRotateLeft(uuid, vel)
+      case NuimoEvent.Rotate.RIGHT =>
+        val vel = velocity / rightRotationSensitivity
+        if (isPressed) onPressRotateRight(uuid, vel)
+        else onRotateRight(uuid, vel)
     }
   }
 
   def onRotateLeft(uuid: String, velocity: Int): Unit
 
   def onRotateRight(uuid: String, velocity: Int): Unit
+
+  def onPressRotateLeft(uuid: String, velocity: Int): Unit
+
+  def onPressRotateRight(uuid: String, velocity: Int): Unit
 
   def onFly(uuid: String, data: Any) = {
     val signal = data.asInstanceOf[js.Array[Int]](0)

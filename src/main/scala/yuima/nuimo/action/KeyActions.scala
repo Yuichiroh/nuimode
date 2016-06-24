@@ -10,8 +10,7 @@ trait KeyAction extends SimpleNuimoAction {
 
   def modifierString =
     if (modifierKeys.isEmpty) ""
-    else
-      modifierKeys.map(_ + " down").mkString(" using {", ", ", "}")
+    else modifierKeys.map(_ + " down").mkString(" using {", ", ", "}")
 
   def withCtrl: KeyAction
 
@@ -57,10 +56,9 @@ case class KeyCode(key: Key,
 case class KeyCodes(keys: Seq[KeyCode]) extends SimpleNuimoAction {
   override def runScript: Any = if (keys.nonEmpty) super.runScript
 
-  def script =
-    "tell application \"System Events\"\n" +
-    s"${ keys.map(k => k.action + k.modifierString).mkString("\n") }\n" +
-    "end tell"
+  def script = "tell application \"System Events\"\n" +
+               s"${ keys.map(k => k.action + k.modifierString).mkString("\n") }\n" +
+               "end tell"
 
   override def runScriptSync: String = if (keys.nonEmpty) super.runScriptSync else ""
 }

@@ -18,7 +18,7 @@ object NuimoManager extends JSApp {
 
   val uuid2config =
     upickle.default.read[Seq[NuimoConfig]](fileIO.readFromFile("config/nuimo_config.txt"))
-      .map(config => config.uuid -> config).toMap
+    .map(config => config.uuid -> config).toMap
 
   var imgTag: String = ""
   var appName = SystemAction.getActiveAppName
@@ -37,11 +37,10 @@ object NuimoManager extends JSApp {
       appName = SystemAction.getActiveAppName
 
     val pHandler =
-      Config.id2handler(
-        HandlerID.withName(
-          uuid2config(peripheralUUID).handlers.getOrElse(appName, HandlerID.Default.toString)
-        )
-      )
+      Config.id2handler(HandlerID.withName(
+        uuid2config(peripheralUUID).handlers.getOrElse(appName, HandlerID.Default.toString)
+      ))
+    
     import NuimoUUID._
     serviceUUID match {
       case Characteristics.BUTTON_CLICK => pHandler.onClick(peripheralUUID, data)
@@ -66,8 +65,8 @@ object NuimoManager extends JSApp {
   def showBatteryStatus(uuid: String) = nuimo.batteryStatus(uuid)
 
   @JSExport
-  def printBatteryStatus(uuid: String, voltage:Int) = {
-    println(s"""Battery: $voltage %""")
+  def printBatteryStatus(uuid: String, voltage: Int) = {
+    println( s"""Battery: $voltage %""")
   }
 
   def writeLedImage(uuid: String, img: LedImage) =
