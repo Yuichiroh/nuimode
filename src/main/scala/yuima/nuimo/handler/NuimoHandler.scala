@@ -7,26 +7,50 @@ import yuima.nuimo.{NuimoEvent, NuimoManager}
 
 import scala.scalajs.js
 
-/** @author Yuichiroh Matsubayashi
-  *         Created on 2016/06/16.
-  */
 trait NuimoHandler {
   val leftRotationSensitivity: Int
   val rightRotationSensitivity: Int
+  val actionSpeed: Int
 
-  def onConnect(uuid: String) = {
+  private var isPressed = false
+  private var actionInPressed = false
+  private var lastValidActionTimeStamp = System.nanoTime()
+  private var totalVelocity = 0
+  private var click = 0
+
+  final def onConnect(uuid: String) = {
     val name = NuimoManager.uuid2config(uuid).name
     println(s"Connected!: $name")
     SystemAction.sendNotification(name, "Connected!")
   }
 
-  def onDisconnect(uuid: String) = {
+  final def onDisconnect(uuid: String) = {
     val name = NuimoManager.uuid2config(uuid).name
     println(s"Disconnected: $name")
     SystemAction.sendNotification(name, "Disconnected.")
   }
 
-  def onSwipe(uuid: String, data: Any) = {
+  final def onClick(uuid: String, data: Any) = {
+    val signal = data.asInstanceOf[js.Array[Int]](0)
+    val action = NuimoEvent.Click(signal)
+
+    action match {
+      case NuimoEvent.Click.PRESS =>
+        isPressed = true
+        onPress(uuid)
+      case NuimoEvent.Click.RELEASE =>
+        println(NuimoManager.appName)
+        isPressed = false
+        if (!actionInPressed) onRelease(uuid)
+        else actionInPressed = false
+    }
+  }
+
+  def onPress(uuid: String): Unit
+
+  def onRelease(uuid: String): Unit
+
+  final def onSwipe(uuid: String, data: Any) = {
     val signal = data.asInstanceOf[js.Array[Int]](0)
     val direction = NuimoEvent.Swipe(signal)
 
@@ -46,40 +70,54 @@ trait NuimoHandler {
 
   def onSwipeDown(uuid: String): Unit
 
-  def onClick(uuid: String, data: Any) = {
-    val signal = data.asInstanceOf[js.Array[Int]](0)
-    val action = NuimoEvent.Click(signal)
-
-    action match {
-      case NuimoEvent.Click.PRESS => onPress(uuid)
-      case NuimoEvent.Click.RELEASE =>
-        println(NuimoManager.appName)
-        onRelease(uuid)
-    }
-  }
-
-  def onPress(uuid: String): Unit
-
-  def onRelease(uuid: String): Unit
-
-  def onRotate(uuid: String, data: Any) = {
+  final def onRotate(uuid: String, data: Any) = {
     val signals = data.asInstanceOf[js.Array[Int]].toArray
+    val velocity = signals(0) - signals(1)
     val direction =
       if (signals(1) == 255) NuimoEvent.Rotate.LEFT
       else NuimoEvent.Rotate.RIGHT
-    val velocity = signals(0) - signals(1)
+
+    if (NuimoManager.hasSufficientEventInterval) totalVelocity = 0
+    totalVelocity += velocity
 
     direction match {
-      case NuimoEvent.Rotate.LEFT => onRotateLeft(uuid, velocity)
-      case NuimoEvent.Rotate.RIGHT => onRotateRight(uuid, velocity)
+      case NuimoEvent.Rotate.LEFT =>
+        val vel = totalVelocity / leftRotationSensitivity
+        if (hasSufficientActionInterval && vel < 0) {
+          if (isPressed) {
+            onPressRotateLeft(uuid, vel)
+            actionInPressed = true
+          }
+          else onRotateLeft(uuid, vel)
+          totalVelocity %= leftRotationSensitivity
+          lastValidActionTimeStamp = System.nanoTime()
+        }
+      case NuimoEvent.Rotate.RIGHT =>
+        val vel = totalVelocity / rightRotationSensitivity
+        if (hasSufficientActionInterval && vel > 0) {
+          if (isPressed) {
+            onPressRotateRight(uuid, vel)
+            actionInPressed = true
+          }
+          else onRotateRight(uuid, vel)
+          lastValidActionTimeStamp = System.nanoTime()
+          totalVelocity %= rightRotationSensitivity
+        }
     }
   }
+
+  def hasSufficientActionInterval =
+    System.nanoTime() - lastValidActionTimeStamp > NuimoManager.actionInterval / actionSpeed
 
   def onRotateLeft(uuid: String, velocity: Int): Unit
 
   def onRotateRight(uuid: String, velocity: Int): Unit
 
-  def onFly(uuid: String, data: Any) = {
+  def onPressRotateLeft(uuid: String, velocity: Int): Unit
+
+  def onPressRotateRight(uuid: String, velocity: Int): Unit
+
+  final def onFly(uuid: String, data: Any) = {
     val signal = data.asInstanceOf[js.Array[Int]](0)
     val direction = NuimoEvent.Fly(signal)
     direction match {

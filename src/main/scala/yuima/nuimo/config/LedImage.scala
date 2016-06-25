@@ -2,9 +2,6 @@
 
 package yuima.nuimo.config
 
-/** @author Yuichiroh Matsubayashi
-  *         Created on 2016/06/15.
-  */
 case class LedImage(state: Array[Int], brightness: Int = 75, duration: Int = 10) {
   def withBrightness(value: Int) = this.copy(brightness = value)
 

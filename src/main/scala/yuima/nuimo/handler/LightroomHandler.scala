@@ -2,15 +2,17 @@
 
 package yuima.nuimo.handler
 
-import yuima.nuimo.action.{Key, KeyCode}
+import yuima.nuimo.action.{Key, KeyCode, KeyCodes}
 
 /** @author Yuichiroh Matsubayashi
   *         Created on 2016/06/17.
   */
-object LightroomHandler extends NuimoHandler {
-  override val leftRotationSensitivity: Int = 50
-  override val rightRotationSensitivity: Int = 50
-  var isPressed = false
+object LightroomHandler extends DefaultHandler {
+  override val leftRotationSensitivity: Int = 20
+  override val rightRotationSensitivity: Int = 20
+  override val actionSpeed = 1
+  val sliderDelta = 5
+  val largeDelta = 20
 
   override def onSwipeLeft(uuid: String): Unit = {
     KeyCode(Key.LeftArrow).runScript
@@ -28,46 +30,34 @@ object LightroomHandler extends NuimoHandler {
     KeyCode(Key.Period).runScript
   }
 
-  override def onFlyRight(uuid: String): Unit = {}
+  override def onRotateLeft(uuid: String, velocity: Int): Unit = {
+    moveSlider(math.abs(velocity), KeyCode(Key.Minus))
+  }
 
-  override def onFlyHover(uuid: String): Unit = {}
+  def moveSlider(velocity: Int, key: KeyCode): Unit = {
+    println(velocity)
+    val large = velocity / largeDelta
+    val normal = velocity / sliderDelta
+    val small = velocity % sliderDelta
+
+    if (large > 0) KeyCodes(Seq.fill(large)(key.withShift)).runScript
+    if (normal > 0) KeyCodes(Seq.fill(normal)(key)).runScript
+    if (small > 0) KeyCodes(Seq.fill(small)(key.withOpt)).runScript
+  }
+
+  override def onPressRotateLeft(uuid: String, velocity: Int): Unit = {
+    KeyCodes(Seq.fill(math.abs(velocity / 2))(KeyCode(Key.Minus).withShift)).runScript
+  }
 
   override def onRotateRight(uuid: String, velocity: Int): Unit = {
-    println("right", velocity)
-    if (velocity < rightRotationSensitivity)
-      KeyCode(Key.Equal).withOpt.runScript
-    else if (velocity < rightRotationSensitivity * 2) {
-      KeyCode(Key.Equal).runScript
-    }
-    else {
-      KeyCode(Key.Equal).withShift.runScript
-    }
+    moveSlider(velocity, KeyCode(Key.Equal))
   }
 
-  override def onRotateLeft(uuid: String, velocity: Int): Unit = {
-    println("left", velocity)
-    if (velocity > -leftRotationSensitivity)
-      KeyCode(Key.Minus).withOpt.runScript
-    else if (velocity > -2 * leftRotationSensitivity)
-      KeyCode(Key.Minus).runScript
-    else
-      KeyCode(Key.Minus).withShift.runScript
-  }
-
-  override def onPress(uuid: String): Unit = {
-    println("pressed", KeyCode(Key.Period).script)
-
-    KeyCode(Key.Period).runScript
-    isPressed = true
+  override def onPressRotateRight(uuid: String, velocity: Int): Unit = {
+    KeyCodes(Seq.fill(velocity / 2)(KeyCode(Key.Equal).withShift)).runScript
   }
 
   override def onRelease(uuid: String): Unit = {
-    isPressed = false
+    KeyCode(Key.Period).runScript
   }
-
-  override def onFlyBackwards(uuid: String): Unit = {}
-
-  override def onFlyTowards(uuid: String): Unit = {}
-
-  override def onFlyLeft(uuid: String): Unit = {}
 }
