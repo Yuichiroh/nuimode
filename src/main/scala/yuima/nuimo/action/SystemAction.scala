@@ -2,19 +2,19 @@
 
 package yuima.nuimo.action
 
-import yuima.nuimo.NuimoManager
+import yuima.nuimo.{Client, Nuimode}
 import yuima.nuimo.config.LedImage._
 
 object SystemAction {
   def sendNotification(message: String, subtitle: String = "", title: String = "Nuimo") = {
     val cmd = s"""display notification "$message" with title "$title" subtitle "$subtitle""""
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
-  def changeVolume(uuid: String, delta: Int) = {
+  def changeVolume(client:Client, uuid: String, delta: Int) = {
     def changeVolume(value: Int) = {
       val cmd = s"set volume  $value / 100.0 * 7"
-      NuimoManager.runAppleScript(cmd)
+      Nuimode.runAppleScript(cmd)
     }
 
     def normalizedVolume(volume: Int) = {
@@ -45,27 +45,27 @@ object SystemAction {
       arr.flatten
     }
 
-    if (NuimoManager.hasSufficientEventInterval(NuimoManager.actionInterval * 10))
-      NuimoManager.currentVolume = SystemAction.getVolume
+    if (Nuimode.hasSufficientEventInterval(Nuimode.actionInterval * 10))
+      Nuimode.currentVolume = SystemAction.getVolume
 
-    val volume = ((NuimoManager.currentVolume + delta) max 0) min 100
+    val volume = ((Nuimode.currentVolume + delta) max 0) min 100
     val nv = normalizedVolume(volume)
-    val nvcv = normalizedVolume(NuimoManager.currentVolume)
+    val nvcv = normalizedVolume(Nuimode.currentVolume)
 
-    if (NuimoManager.imgTag != "volume" || nvcv != nv) {
-      NuimoManager.writeLedImage(uuid, volumeImage(nv))
-      NuimoManager.imgTag = "volume"
+    if (Nuimode.imgTag != "volume" || nvcv != nv) {
+      client.writeLedImage(uuid, volumeImage(nv))
+      Nuimode.imgTag = "volume"
     }
 
-    if (volume != NuimoManager.currentVolume) {
+    if (volume != Nuimode.currentVolume) {
       changeVolume(volume)
-      NuimoManager.currentVolume = volume
+      Nuimode.currentVolume = volume
     }
   }
 
   def getVolume = {
     val cmd = "return output volume of (get volume settings)"
-    NuimoManager.runAppleScriptSync(cmd).toInt
+    Nuimode.runAppleScriptSync(cmd).toInt
   }
 
   def isMuted = {
@@ -77,7 +77,7 @@ object SystemAction {
         |  return true
         |end if
       """.stripMargin
-    NuimoManager.runAppleScriptSync(cmd).toBoolean
+    Nuimode.runAppleScriptSync(cmd).toBoolean
   }
 
   def mute = {
@@ -89,12 +89,12 @@ object SystemAction {
         |  set volume without output muted
         |end if
       """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
   def getActiveAppName = {
     val cmd = """return path to frontmost application as text"""
-    NuimoManager.runAppleScriptSync(cmd).split(":").reverse.find(_ != "") match {
+    Nuimode.runAppleScriptSync(cmd).split(":").reverse.find(_ != "") match {
       case Some(app) => app
       case None => ""
     }

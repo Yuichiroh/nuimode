@@ -2,8 +2,8 @@
 
 package yuima.nuimo.action
 
-import yuima.nuimo.NuimoManager
 import yuima.nuimo.config.LedImage
+import yuima.nuimo.{Client, Nuimode}
 
 object ItunesAction {
   def playpause = {
@@ -11,7 +11,7 @@ object ItunesAction {
                 |  playpause
                 |end tell
               """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
   def activate = {
@@ -19,7 +19,7 @@ object ItunesAction {
                 |  activate
                 |end tell
               """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
   def choosePlayListWithActivatingItunes = {
@@ -33,7 +33,7 @@ object ItunesAction {
                 |
                 |tell application prevApp to activate
               """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
   def choosePlayList = {
@@ -50,17 +50,17 @@ object ItunesAction {
                 |  end tell
                 |end if
               """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
-  def fadeInOut(uuid: String, duration: Double = 0.5) = {
+  def fadeInOut(client: Client, uuid: String, duration: Double = 0.5) = {
     if (isPlaying) {
-      NuimoManager.writeLedImage(uuid, LedImage.pause)
-      NuimoManager.imgTag = "pause"
+      client.writeLedImage(uuid, LedImage.pause)
+      Nuimode.imgTag = "pause"
     }
     else {
-      NuimoManager.writeLedImage(uuid, LedImage.play)
-      NuimoManager.imgTag = "play"
+      client.writeLedImage(uuid, LedImage.play)
+      Nuimode.imgTag = "play"
     }
 
     val resolution = getSoundVolume min 40
@@ -88,14 +88,14 @@ object ItunesAction {
                   |  set sound volume to originalVol
                   |end tell
       """.stripMargin
-    NuimoManager.runAppleScriptSync(cmd)
+    Nuimode.runAppleScriptSync(cmd)
   }
 
   def getSoundVolume = {
-    NuimoManager.runAppleScriptSync( """tell application "iTunes"
-                                       |	 return sound volume
-                                       |end tell
-                                     """.stripMargin).toInt
+    Nuimode.runAppleScriptSync( """tell application "iTunes"
+                                  |	 return sound volume
+                                  |end tell
+                                """.stripMargin).toInt
   }
 
   def isPlaying = {
@@ -107,25 +107,25 @@ object ItunesAction {
                 |  end if
                 |end tell
               """.stripMargin
-    NuimoManager.runAppleScriptSync(cmd).toBoolean
+    Nuimode.runAppleScriptSync(cmd).toBoolean
   }
 
-  def prevTrack(uuid: String) = {
-    NuimoManager.writeLedImage(uuid, LedImage.backward)
+  def prevTrack(client: Client, uuid: String) = {
+    client.writeLedImage(uuid, LedImage.backward)
     val cmd = """tell application "iTunes"
                 |  back track
                 |end tell
               """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
-  def nextTrack(uuid: String) = {
-    NuimoManager.writeLedImage(uuid, LedImage.forward)
+  def nextTrack(client: Client, uuid: String) = {
+    client.writeLedImage(uuid, LedImage.forward)
     val cmd = """tell application "iTunes"
                 |      next track
                 |end tell
               """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 
   def notifyCurrentTrack = {
@@ -156,6 +156,6 @@ object ItunesAction {
                 |	 display notification str with title trackName
                 |end tell
               """.stripMargin
-    NuimoManager.runAppleScript(cmd)
+    Nuimode.runAppleScript(cmd)
   }
 }

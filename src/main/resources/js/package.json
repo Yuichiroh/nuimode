@@ -1,0 +1,6 @@
+{
+  "name": "nuimo-websocket-server",
+  "version": "0.0.1",
+  "description": "websocket server for nuimo",
+  "dependencies": {}
+}
