@@ -37,18 +37,14 @@ class Nuimo {
         this.ps = [];
 
         this.SERVICES = {
-            // BATTERY_STATUS: '0000180f00001000800000805f9b34fb',
             BATTERY_STATUS: '180F',
-            // DEVICE_INFORMATION: '0000180a00001000800000805f9b34fb',
             DEVICE_INFORMATION: '180A',
             LED_MATRIX: 'f29b1523cb1940f3be5c7241ecb82fd1',
             USER_INPUT: 'f29b1525cb1940f3be5c7241ecb82fd2'
         };
 
         this.CHARACTERISTICS = {
-            // BATTERY: '00002a1900001000800000805f9b34fb',
             BATTERY: '2a19',
-            // DEVICE_INFO: '00002a2900001000800000805f9b34fb',
             DEVICE_INFO: '2a29',
             LED_MATRIX: 'f29b1524cb1940f3be5c7241ecb82fd1',
             ROTATION: 'f29b1528cb1940f3be5c7241ecb82fd2',
@@ -57,9 +53,7 @@ class Nuimo {
             FLY: 'f29b1526cb1940f3be5c7241ecb82fd2'
         };
 
-        this.EVENTS = {
-            CONNECTED: 'Connected',
-            DISCONNECTED: 'Disconnected'
+        this.EVENTS = { CONNECTED: 'Connected', DISCONNECTED: 'Disconnected'
         };
 
         this.server = net.createServer(conn => this.server_hander(conn));
@@ -68,7 +62,7 @@ class Nuimo {
     }
 
     start() {
-        let config = require("./nuimo_config.json");
+        let config = require("../../../../config/nuimo_config.json");
         let uuids = config.map((c, i, arr) => c.uuid);
         this.init(uuids)
     }
@@ -86,9 +80,7 @@ class Nuimo {
         // conn.write("connected");
         this.connect = conn;
         let that = this;
-        this.ps.forEach((p, i, arr) =>
-            that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED)
-        );
+        this.ps.forEach((p, i, arr) => that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED));
         conn.on('data', (data) => {
             // console.log('server-> ' + data + ' from ' + conn.remoteAddress + ':' + conn.remotePort);
             // conn.write('server -> Repeating: ' + data);
@@ -221,9 +213,7 @@ class Nuimo {
                                 });
                             });
                         }
-                    });
-                    that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED);
-                    that.ps.push(p);
+                    }); that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED);that.ps.push(p);
                 });
             }
             let puuid = p.uuid;

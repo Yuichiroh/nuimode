@@ -1,3 +1,5 @@
+// Copyright (c) 2016 Yuichiroh Matsubayashi
+
 package yuima.nuimo
 
 import java.net.InetSocketAddress
@@ -20,7 +22,7 @@ object Nuimode {
 
   val actionInterval = 2e8
   val uuid2config =
-    upickle.default.read[Seq[NuimoConfig]](Source.fromFile("config/nuimo_config.txt").getLines().mkString("\n"))
+    upickle.default.read[Seq[NuimoConfig]](Source.fromFile("config/nuimo_config.json").getLines().mkString("\n"))
     .map(config => config.uuid -> config).toMap
   val uuids = uuid2config.keys
 
