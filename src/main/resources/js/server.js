@@ -130,7 +130,7 @@ class Nuimo {
             else {
                 msg = JSON.stringify({"pId": pid, "sId": sid, "data": []});
             }
-            console.log(msg);
+            // console.log(msg);
             this.connect.write(msg + ";");
         }
     }
