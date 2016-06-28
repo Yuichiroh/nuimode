@@ -2,7 +2,8 @@
 
 package yuima.nuimo.action
 
-import yuima.nuimo.{Client, Nuimode}
+import yuima.nuimo.Nuimode
+import yuima.nuimo.Nuimode._
 import yuima.nuimo.config.LedImage._
 
 object SystemAction {
@@ -11,7 +12,7 @@ object SystemAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def changeVolume(client:Client, uuid: String, delta: Int) = {
+  def changeVolume(client: Nuimode, uuid: String, delta: Int) = {
     def changeVolume(value: Int) = {
       val cmd = s"set volume  $value / 100.0 * 7"
       Nuimode.runAppleScript(cmd)
@@ -24,7 +25,7 @@ object SystemAction {
         else rounded - 1
       else rounded
     }
-    
+
     def volumeImage(volume: Int) = {
       val marginLeft = (volumeCol - volumeRow) / 2
       val marginRight = volumeCol - volumeRow - marginLeft

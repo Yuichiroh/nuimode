@@ -3,7 +3,7 @@
 package yuima.nuimo.handler
 
 import yuima.nuimo.action.SystemAction
-import yuima.nuimo.{Client, NuimoEvent, Nuimode}
+import yuima.nuimo.{NuimoEvent, Nuimode}
 
 trait NuimoHandler {
   val leftRotationSensitivity: Int
@@ -28,7 +28,7 @@ trait NuimoHandler {
     SystemAction.sendNotification(name, "Disconnected.")
   }
 
-  final def onClick(client: Client, uuid: String, data: Any) = {
+  final def onClick(client: Nuimode, uuid: String, data: Any) = {
     val signal = data.asInstanceOf[Array[Int]](0)
     val action = NuimoEvent.Click(signal)
 
@@ -44,11 +44,11 @@ trait NuimoHandler {
     }
   }
 
-  def onPress(client: Client, uuid: String): Unit
+  def onPress(client: Nuimode, uuid: String): Unit
 
-  def onRelease(client: Client, uuid: String): Unit
+  def onRelease(client: Nuimode, uuid: String): Unit
 
-  final def onSwipe(client: Client, uuid: String, data: Any) = {
+  final def onSwipe(client: Nuimode, uuid: String, data: Any) = {
     val signal = data.asInstanceOf[Array[Int]](0)
     val direction = NuimoEvent.Swipe(signal)
 
@@ -60,15 +60,15 @@ trait NuimoHandler {
     }
   }
 
-  def onSwipeLeft(client: Client, uuid: String): Unit
+  def onSwipeLeft(client: Nuimode, uuid: String): Unit
 
-  def onSwipeRight(client: Client, uuid: String): Unit
+  def onSwipeRight(client: Nuimode, uuid: String): Unit
 
-  def onSwipeUp(client: Client, uuid: String): Unit
+  def onSwipeUp(client: Nuimode, uuid: String): Unit
 
-  def onSwipeDown(client: Client, uuid: String): Unit
+  def onSwipeDown(client: Nuimode, uuid: String): Unit
 
-  final def onRotate(client: Client, uuid: String, data: Any) = {
+  final def onRotate(client: Nuimode, uuid: String, data: Any) = {
     val signals = data.asInstanceOf[Array[Int]].toArray
     val velocity = signals(0) - signals(1)
     val direction =
@@ -107,15 +107,15 @@ trait NuimoHandler {
   def hasSufficientActionInterval =
     System.nanoTime() - lastValidActionTimeStamp > Nuimode.actionInterval / actionSpeed
 
-  def onRotateLeft(client: Client, uuid: String, velocity: Int): Unit
+  def onRotateLeft(client: Nuimode, uuid: String, velocity: Int): Unit
 
-  def onRotateRight(client: Client, uuid: String, velocity: Int): Unit
+  def onRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit
 
-  def onPressRotateLeft(client: Client, uuid: String, velocity: Int): Unit
+  def onPressRotateLeft(client: Nuimode, uuid: String, velocity: Int): Unit
 
-  def onPressRotateRight(client: Client, uuid: String, velocity: Int): Unit
+  def onPressRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit
 
-  final def onFly(client: Client, uuid: String, data: Any) = {
+  final def onFly(client: Nuimode, uuid: String, data: Any) = {
     val signal = data.asInstanceOf[Array[Int]](0)
     val direction = NuimoEvent.Fly(signal)
     direction match {
@@ -130,13 +130,13 @@ trait NuimoHandler {
     }
   }
 
-  def onFlyLeft(client: Client, uuid: String): Unit
+  def onFlyLeft(client: Nuimode, uuid: String): Unit
 
-  def onFlyRight(client: Client, uuid: String): Unit
+  def onFlyRight(client: Nuimode, uuid: String): Unit
 
-  def onFlyBackwards(client: Client, uuid: String): Unit
+  def onFlyBackwards(client: Nuimode, uuid: String): Unit
 
-  def onFlyTowards(client: Client, uuid: String): Unit
+  def onFlyTowards(client: Nuimode, uuid: String): Unit
 
-  def onFlyHover(client: Client, uuid: String): Unit
+  def onFlyHover(client: Nuimode, uuid: String): Unit
 }

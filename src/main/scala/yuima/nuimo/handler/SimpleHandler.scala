@@ -2,7 +2,7 @@
 
 package yuima.nuimo.handler
 
-import yuima.nuimo.{Client, Nuimode}
+import yuima.nuimo.Nuimode
 import yuima.nuimo.action.SimpleNuimoAction
 
 /** @author Yuichiroh Matsubayashi
@@ -23,35 +23,47 @@ trait SimpleHandler extends DefaultHandler {
   val flyBackwardsAction: Option[Seq[SimpleNuimoAction]] = None
   val flyHoverAction: Option[Seq[SimpleNuimoAction]] = None
 
-  override def onSwipeLeft(client:Client, uuid: String): Unit = doAction(pressAction, super.onSwipeLeft(client, uuid))
+  override def onSwipeLeft(client: Nuimode, uuid: String): Unit =
+    doAction(pressAction, super.onSwipeLeft(client, uuid))
 
-  override def onSwipeUp(client:Client, uuid: String): Unit = doAction(swipeUpAction, super.onSwipeUp(client, uuid))
+  override def onSwipeUp(client: Nuimode, uuid: String): Unit =
+    doAction(swipeUpAction, super.onSwipeUp(client, uuid))
 
-  override def onFlyRight(client:Client, uuid: String): Unit = doAction(flyRightAction, super.onFlyRight(client, uuid))
+  override def onFlyRight(client: Nuimode, uuid: String): Unit =
+    doAction(flyRightAction, super.onFlyRight(client, uuid))
 
-  override def onFlyHover(client:Client, uuid: String): Unit = doAction(flyHoverAction, super.onFlyHover(client, uuid))
+  override def onFlyHover(client: Nuimode, uuid: String): Unit =
+    doAction(flyHoverAction, super.onFlyHover(client, uuid))
 
-  private def doAction(action: Option[Seq[SimpleNuimoAction]],
-                       superAction: => Unit) = pressAction match {
+  override def onRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit =
+    doAction(rotateRightAction, super.onRotateRight(client, uuid, velocity))
+
+  override def onSwipeDown(client: Nuimode, uuid: String): Unit =
+    doAction(swipeDownAction, super.onSwipeDown(client, uuid))
+
+  override def onRotateLeft(client: Nuimode, uuid: String, velocity: Int): Unit =
+    doAction(rotateLeftAction, super.onRotateLeft(client, uuid, velocity))
+
+  private def doAction(action: Option[Seq[SimpleNuimoAction]], superAction: => Unit) = pressAction match {
     case Some(actions) => actions.foreach(a => Nuimode.runAppleScript(a.script))
     case None => superAction
   }
 
-  override def onRotateRight(client:Client, uuid: String, velocity: Int): Unit = doAction(rotateRightAction, super.onRotateRight(client, uuid, velocity))
+  override def onPress(client: Nuimode, uuid: String): Unit =
+    doAction(pressAction, super.onPress(client, uuid))
 
-  override def onSwipeDown(client:Client, uuid: String): Unit = doAction(swipeDownAction, super.onSwipeDown(client, uuid))
+  override def onSwipeRight(client: Nuimode, uuid: String): Unit =
+    doAction(swipeRightAction, super.onSwipeRight(client, uuid))
 
-  override def onRotateLeft(client:Client, uuid: String, velocity: Int): Unit = doAction(rotateLeftAction, super.onRotateLeft(client, uuid, velocity))
+  override def onRelease(client: Nuimode, uuid: String): Unit =
+    doAction(releaseAction, super.onRelease(client, uuid))
 
-  override def onPress(client:Client, uuid: String): Unit = doAction(pressAction, super.onPress(client, uuid))
+  override def onFlyBackwards(client: Nuimode, uuid: String): Unit =
+    doAction(flyBackwardsAction, super.onFlyBackwards(client, uuid))
 
-  override def onSwipeRight(client:Client, uuid: String): Unit = doAction(swipeRightAction, super.onSwipeRight(client, uuid))
+  override def onFlyTowards(client: Nuimode, uuid: String): Unit =
+    doAction(flyTowardsAction, super.onFlyTowards(client, uuid))
 
-  override def onRelease(client:Client, uuid: String): Unit = doAction(releaseAction, super.onRelease(client, uuid))
-
-  override def onFlyBackwards(client:Client, uuid: String): Unit = doAction(flyBackwardsAction, super.onFlyBackwards(client, uuid))
-
-  override def onFlyTowards(client:Client, uuid: String): Unit = doAction(flyTowardsAction, super.onFlyTowards(client, uuid))
-
-  override def onFlyLeft(client:Client, uuid: String): Unit = doAction(flyLeftAction, super.onFlyLeft(client, uuid))
+  override def onFlyLeft(client: Nuimode, uuid: String): Unit =
+    doAction(flyLeftAction, super.onFlyLeft(client, uuid))
 }

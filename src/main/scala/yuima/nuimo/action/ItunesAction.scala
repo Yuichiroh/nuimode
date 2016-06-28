@@ -2,8 +2,8 @@
 
 package yuima.nuimo.action
 
+import yuima.nuimo.Nuimode
 import yuima.nuimo.config.LedImage
-import yuima.nuimo.{Client, Nuimode}
 
 object ItunesAction {
   def playpause = {
@@ -53,7 +53,7 @@ object ItunesAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def fadeInOut(client: Client, uuid: String, duration: Double = 0.5) = {
+  def fadeInOut(client: Nuimode, uuid: String, duration: Double = 0.5) = {
     if (isPlaying) {
       client.writeLedImage(uuid, LedImage.pause)
       Nuimode.imgTag = "pause"
@@ -110,7 +110,7 @@ object ItunesAction {
     Nuimode.runAppleScriptSync(cmd).toBoolean
   }
 
-  def prevTrack(client: Client, uuid: String) = {
+  def prevTrack(client: Nuimode, uuid: String) = {
     client.writeLedImage(uuid, LedImage.backward)
     val cmd = """tell application "iTunes"
                 |  back track
@@ -119,7 +119,7 @@ object ItunesAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def nextTrack(client: Client, uuid: String) = {
+  def nextTrack(client: Nuimode, uuid: String) = {
     client.writeLedImage(uuid, LedImage.forward)
     val cmd = """tell application "iTunes"
                 |      next track

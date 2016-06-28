@@ -57,7 +57,7 @@ object Nuimode {
 
     Console.err.println(address, port)
 
-    val client = system.actorOf(Props(classOf[Client], new InetSocketAddress(address, port)))
+    val client = system.actorOf(Props(classOf[Nuimode], new InetSocketAddress(address, port)))
   }
 
   def defalultOptions: OptionMap = Map()
@@ -79,14 +79,15 @@ object Nuimode {
   def hasSufficientEventInterval(interval: Double): Boolean = {
     System.nanoTime() - lastEventTimeStamp > interval
   }
-}
 
-object Client {
   def props(remote: InetSocketAddress) =
-    Props(classOf[Client], remote)
+    Props(classOf[Nuimode], remote)
 }
 
-class Client(remote: InetSocketAddress) extends Actor {
+//object Client {
+//}
+
+class Nuimode(remote: InetSocketAddress) extends Actor {
   var connection: ActorRef = _
 
   import Nuimode._

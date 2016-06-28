@@ -90,7 +90,7 @@ class Nuimo {
             that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED)
         );
         conn.on('data', (data) => {
-            console.log('server-> ' + data + ' from ' + conn.remoteAddress + ':' + conn.remotePort);
+            // console.log('server-> ' + data + ' from ' + conn.remoteAddress + ':' + conn.remotePort);
             // conn.write('server -> Repeating: ' + data);
             let fields = data.toString().split(":");
             if (fields[1] === "led") {
