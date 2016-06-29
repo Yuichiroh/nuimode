@@ -4,7 +4,9 @@ package yuima.nuimo.action
 
 import yuima.nuimo.Nuimode
 import yuima.nuimo.Nuimode._
+import yuima.nuimo.config.Config
 import yuima.nuimo.config.LedImage._
+import scala.concurrent.duration._
 
 object SystemAction {
   def sendNotification(message: String, subtitle: String = "", title: String = "Nuimo") = {
@@ -46,7 +48,7 @@ object SystemAction {
       arr.flatten
     }
 
-    if (Nuimode.hasSufficientEventInterval(Nuimode.actionInterval * 10))
+    if (Nuimode.hasSufficientEventInterval(Config.actionInterval.milli.toNanos * 10))
       Nuimode.currentVolume = SystemAction.getVolume
 
     val volume = ((Nuimode.currentVolume + delta) max 0) min 100

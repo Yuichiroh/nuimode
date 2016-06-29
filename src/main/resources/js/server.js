@@ -95,6 +95,7 @@ class Nuimo {
 
         conn.on('close', () => {
             console.log('server-> client closed connection');
+            that.connect = null;
             noble.startScanning(['180F', '180A'], false);
         });
     }
@@ -179,8 +180,6 @@ class Nuimo {
                 return noble.startScanning(['180F', '180A'], false);
             else return noble.stopScanning();
         });
-
-        console.log("init", uuids);
 
         noble.on('discover', p => {
             console.log('Found device with local name: ' + p.advertisement.localName);

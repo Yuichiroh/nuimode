@@ -3,7 +3,7 @@
 package yuima.nuimo
 
 import java.net.InetSocketAddress
-import javax.script.ScriptEngineManager
+import java.util.concurrent.Executors
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.io.Tcp._
@@ -13,14 +13,15 @@ import yuima.nuimo.action.SystemAction
 import yuima.nuimo.config.Config.HandlerID
 import yuima.nuimo.config.{Config, LedImage, NuimoConfig, NuimoUUID}
 
+import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
+import scala.sys.process._
 
 object Nuimode {
   type OptionMap = Map[Symbol, Any]
   val system = ActorSystem.create()
-  val se = (new ScriptEngineManager).getEngineByName("AppleScript")
 
-  val actionInterval = 2e8
   val uuid2config =
     upickle.default.read[Seq[NuimoConfig]](Source.fromFile("config/nuimo_config.json").getLines().mkString("\n"))
     .map(config => config.uuid -> config).toMap
@@ -44,9 +45,7 @@ object Nuimode {
   }
 
   def main(args: Array[String]): Unit = {
-    println("Nuimo Manager")
     val options = nextOption(defalultOptions, args.toList)
-    //    val options = defalultOptions
 
     val port = options.get('port) match {
       case Some(p) => p.asInstanceOf[Int]
@@ -57,8 +56,9 @@ object Nuimode {
       case None => "localhost"
     }
 
-    Console.err.println(address, port)
-
+    Console.err.println("Nuimo Manager")
+    Console.err.println(s"listening on $address:$port")
+    "node src/main/resources/js/server.js".run
     val client = system.actorOf(Props(classOf[Nuimode], new InetSocketAddress(address, port)))
   }
 
@@ -75,11 +75,11 @@ object Nuimode {
   }
 
   def hasSufficientEventInterval: Boolean = {
-    System.nanoTime() - lastEventTimeStamp > actionInterval
+    System.nanoTime() - lastEventTimeStamp > Config.actionInterval.milli.toNanos
   }
 
-  def hasSufficientEventInterval(interval: Double): Boolean = {
-    System.nanoTime() - lastEventTimeStamp > interval
+  def hasSufficientEventInterval(nanoTime: Long): Boolean = {
+    System.nanoTime() - lastEventTimeStamp > nanoTime
   }
 
   def props(remote: InetSocketAddress) =
@@ -87,18 +87,21 @@ object Nuimode {
 }
 
 class Nuimode(remote: InetSocketAddress) extends Actor {
-  var connection: ActorRef = _
+  implicit val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(Config.numThreadPool))
 
   import Nuimode._
   import context.system
+
+  var connection: ActorRef = _
 
   IO(Tcp) ! Connect(remote)
 
   def receive = {
     case CommandFailed(_: Connect) =>
-      sys.error("connect failed")
-      context stop self
-      system.terminate()
+      //      sys.error("connect failed")
+//      context stop self
+//      system.terminate()
+      IO(Tcp) ! Connect(remote)
     case c@Connected(_remote, local) =>
       connection = sender
       connection ! Register(self)
@@ -137,17 +140,20 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
       ))
 
     import NuimoUUID._
-    serviceUUID match {
-      case Characteristics.BUTTON_CLICK => pHandler.onClick(this, peripheralUUID, data)
-      case Characteristics.ROTATION => pHandler.onRotate(this, peripheralUUID, data)
-      case Characteristics.SWIPE => pHandler.onSwipe(this, peripheralUUID, data)
-      case Characteristics.FLY => pHandler.onFly(this, peripheralUUID, data)
-      case Characteristics.BATTERY => printBatteryStatus(peripheralUUID, data(0))
-      case Events.CONNECTED => pHandler.onConnect(peripheralUUID)
-      case Events.DISCONNECTED => pHandler.onDisconnect(peripheralUUID)
-      case _ =>
+
+    Future {
+      serviceUUID match {
+        case Characteristics.BUTTON_CLICK => pHandler.onClick(this, peripheralUUID, data)
+        case Characteristics.ROTATION => pHandler.onRotate(this, peripheralUUID, data)
+        case Characteristics.SWIPE => pHandler.onSwipe(this, peripheralUUID, data)
+        case Characteristics.FLY => pHandler.onFly(this, peripheralUUID, data)
+        case Characteristics.BATTERY => printBatteryStatus(peripheralUUID, data(0))
+        case Events.CONNECTED => pHandler.onConnect(peripheralUUID)
+        case Events.DISCONNECTED => pHandler.onDisconnect(peripheralUUID)
+        case _ =>
+      }
+      lastEventTimeStamp = System.nanoTime()
     }
-    lastEventTimeStamp = System.nanoTime()
   }
 
   def printBatteryStatus(uuid: String, voltage: Int) = println( s"""Battery: $voltage %""")

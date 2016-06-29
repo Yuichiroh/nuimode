@@ -58,7 +58,7 @@ object LightroomHandler extends DefaultHandler {
     KeyCodes(Seq.fill(velocity / 2)(KeyCode(Key.Equal).withShift)).runScript
   }
 
-  override def onRelease(client: Nuimode, uuid: String): Unit = {
+  override def onRelease(client: Nuimode, uuid: String, clickCount: Int): Unit = {
     KeyCode(Key.Period).runScript
   }
 }

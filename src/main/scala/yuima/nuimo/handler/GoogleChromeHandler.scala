@@ -10,13 +10,13 @@ import yuima.nuimo.config.LedImage
   *         Created on 2016/06/20.
   */
 object GoogleChromeHandler extends DefaultHandler {
-  override def onRelease(client: Nuimode, uuid: String) = {
+  override def onRelease(client: Nuimode, uuid: String, clickCount: Int) = {
     println("chrome release")
     val success = ChromeYoutubeAction.tryPlaypause
     if (success)
       client.writeLedImage(uuid, LedImage.youtube)
     else
-      super.onRelease(client, uuid)
+      super.onRelease(client, uuid, clickCount)
   }
 
   override def onSwipeRight(client: Nuimode, uuid: String): Unit = {

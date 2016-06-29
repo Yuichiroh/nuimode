@@ -32,8 +32,8 @@ trait SimpleHandler extends DefaultHandler {
   override def onFlyRight(client: Nuimode, uuid: String): Unit =
     doAction(flyRightAction, super.onFlyRight(client, uuid))
 
-  override def onFlyHover(client: Nuimode, uuid: String): Unit =
-    doAction(flyHoverAction, super.onFlyHover(client, uuid))
+  override def onFlyHover(client: Nuimode, uuid: String, height: Int): Unit =
+    doAction(flyHoverAction, super.onFlyHover(client, uuid, height))
 
   override def onRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit =
     doAction(rotateRightAction, super.onRotateRight(client, uuid, velocity))
@@ -55,8 +55,8 @@ trait SimpleHandler extends DefaultHandler {
   override def onSwipeRight(client: Nuimode, uuid: String): Unit =
     doAction(swipeRightAction, super.onSwipeRight(client, uuid))
 
-  override def onRelease(client: Nuimode, uuid: String): Unit =
-    doAction(releaseAction, super.onRelease(client, uuid))
+  override def onRelease(client: Nuimode, uuid: String, clickCount: Int): Unit =
+    doAction(releaseAction, super.onRelease(client, uuid, clickCount))
 
   override def onFlyBackwards(client: Nuimode, uuid: String): Unit =
     doAction(flyBackwardsAction, super.onFlyBackwards(client, uuid))

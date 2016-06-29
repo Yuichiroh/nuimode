@@ -12,10 +12,16 @@ class DefaultHandler extends NuimoHandler {
   override val rightRotationSensitivity: Int = 12
   override val actionSpeed: Int = 10
 
+  var fading = false
+
   override def onPress(client: Nuimode, uuid: String) = {}
 
-  override def onRelease(client: Nuimode, uuid: String): Unit = {
-    ItunesAction.fadeInOut(client, uuid)
+  override def onRelease(client: Nuimode, uuid: String, clickCount: Int): Unit = {
+    if (!fading) {
+      fading = true
+      ItunesAction.fadeInOut(client, uuid)
+      fading = false
+    }
   }
 
   override def onSwipeLeft(client: Nuimode, uuid: String): Unit = {
@@ -38,11 +44,11 @@ class DefaultHandler extends NuimoHandler {
     SystemAction.mute
   }
 
-  override def onRotateLeft(client: Nuimode, uuid: String, velocity: Int) = SystemAction.changeVolume(client, uuid,
-                                                                                                      velocity)
+  override def onRotateLeft(client: Nuimode, uuid: String, velocity: Int) =
+    SystemAction.changeVolume(client, uuid, velocity)
 
-  override def onRotateRight(client: Nuimode, uuid: String, velocity: Int) = SystemAction.changeVolume(client, uuid,
-                                                                                                       velocity)
+  override def onRotateRight(client: Nuimode, uuid: String, velocity: Int) =
+    SystemAction.changeVolume(client, uuid, velocity)
 
   override def onPressRotateLeft(client: Nuimode, uuid: String, velocity: Int): Unit = {}
 
@@ -56,5 +62,5 @@ class DefaultHandler extends NuimoHandler {
 
   override def onFlyBackwards(client: Nuimode, uuid: String): Unit = {}
 
-  override def onFlyHover(client: Nuimode, uuid: String): Unit = {}
+  override def onFlyHover(client: Nuimode, uuid: String, height: Int): Unit = {}
 }
