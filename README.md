@@ -63,7 +63,7 @@ val id2handler = Map(
    HandlerID.Safari -> SafariHandler
 )
 ```
-Finally, you assign the handler to the application name on `config/nuimo_config.txt` as:
+Finally, you assign the application name to the handler on `config/nuimo_config.txt` as:
 ```json
 [
   {
@@ -73,7 +73,7 @@ Finally, you assign the handler to the application name on `config/nuimo_config.
       "Microsoft PowerPoint.app": "PowerPoint",
       "Adobe Lightroom.app": "Lightroom",
       "Google Chrome.app": "GoogleChrome",
-      "Safari.app": "Safari",
+      "Safari.app": "Safari"
     }
   }
 ]

@@ -97,11 +97,7 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
   IO(Tcp) ! Connect(remote)
 
   def receive = {
-    case CommandFailed(_: Connect) =>
-      //      sys.error("connect failed")
-//      context stop self
-//      system.terminate()
-      IO(Tcp) ! Connect(remote)
+    case CommandFailed(_: Connect) => IO(Tcp) ! Connect(remote)
     case c@Connected(_remote, local) =>
       connection = sender
       connection ! Register(self)
