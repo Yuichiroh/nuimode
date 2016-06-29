@@ -2,14 +2,14 @@
 
 package yuima.nuimo.action
 
-import yuima.nuimo.NuimoManager
+import yuima.nuimo.Nuimode
 
 trait SimpleNuimoAction {
   def script: String
 
-  def runScript = NuimoManager.runAppleScript(script)
+  def runScript = Nuimode.runAppleScript(script)
 
-  def runScriptSync = NuimoManager.runAppleScriptSync(script)
+  def runScriptSync = Nuimode.runAppleScriptSync(script)
 }
 
 case class AppleScript(script: String) extends SimpleNuimoAction

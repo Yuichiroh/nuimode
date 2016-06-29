@@ -19,4 +19,7 @@ object Config {
     val Default, PowerPoint, Lightroom, GoogleChrome = Value
   }
 
+  val numThreadPool = 4
+  val actionInterval = 200
+  val clickInterval = 200
 }

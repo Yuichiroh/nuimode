@@ -2,7 +2,7 @@
 
 package yuima.nuimo.handler
 
-import yuima.nuimo.NuimoManager
+import yuima.nuimo.Nuimode
 import yuima.nuimo.action.SimpleNuimoAction
 
 /** @author Yuichiroh Matsubayashi
@@ -23,35 +23,47 @@ trait SimpleHandler extends DefaultHandler {
   val flyBackwardsAction: Option[Seq[SimpleNuimoAction]] = None
   val flyHoverAction: Option[Seq[SimpleNuimoAction]] = None
 
-  override def onSwipeLeft(uuid: String): Unit = doAction(pressAction, super.onSwipeLeft(uuid))
+  override def onSwipeLeft(client: Nuimode, uuid: String): Unit =
+    doAction(pressAction, super.onSwipeLeft(client, uuid))
 
-  override def onSwipeUp(uuid: String): Unit = doAction(swipeUpAction, super.onSwipeUp(uuid))
+  override def onSwipeUp(client: Nuimode, uuid: String): Unit =
+    doAction(swipeUpAction, super.onSwipeUp(client, uuid))
 
-  override def onFlyRight(uuid: String): Unit = doAction(flyRightAction, super.onFlyRight(uuid))
+  override def onFlyRight(client: Nuimode, uuid: String): Unit =
+    doAction(flyRightAction, super.onFlyRight(client, uuid))
 
-  override def onFlyHover(uuid: String): Unit = doAction(flyHoverAction, super.onFlyHover(uuid))
+  override def onFlyHover(client: Nuimode, uuid: String, height: Int): Unit =
+    doAction(flyHoverAction, super.onFlyHover(client, uuid, height))
 
-  private def doAction(action: Option[Seq[SimpleNuimoAction]],
-                       superAction: => Unit) = pressAction match {
-    case Some(actions) => actions.foreach(a => NuimoManager.runAppleScript(a.script))
+  override def onRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit =
+    doAction(rotateRightAction, super.onRotateRight(client, uuid, velocity))
+
+  override def onSwipeDown(client: Nuimode, uuid: String): Unit =
+    doAction(swipeDownAction, super.onSwipeDown(client, uuid))
+
+  override def onRotateLeft(client: Nuimode, uuid: String, velocity: Int): Unit =
+    doAction(rotateLeftAction, super.onRotateLeft(client, uuid, velocity))
+
+  private def doAction(action: Option[Seq[SimpleNuimoAction]], superAction: => Unit) = pressAction match {
+    case Some(actions) => actions.foreach(a => Nuimode.runAppleScript(a.script))
     case None => superAction
   }
 
-  override def onRotateRight(uuid: String, velocity: Int): Unit = doAction(rotateRightAction, super.onRotateRight(uuid, velocity))
+  override def onPress(client: Nuimode, uuid: String): Unit =
+    doAction(pressAction, super.onPress(client, uuid))
 
-  override def onSwipeDown(uuid: String): Unit = doAction(swipeDownAction, super.onSwipeDown(uuid))
+  override def onSwipeRight(client: Nuimode, uuid: String): Unit =
+    doAction(swipeRightAction, super.onSwipeRight(client, uuid))
 
-  override def onRotateLeft(uuid: String, velocity: Int): Unit = doAction(rotateLeftAction, super.onRotateLeft(uuid, velocity))
+  override def onRelease(client: Nuimode, uuid: String, clickCount: Int): Unit =
+    doAction(releaseAction, super.onRelease(client, uuid, clickCount))
 
-  override def onPress(uuid: String): Unit = doAction(pressAction, super.onPress(uuid))
+  override def onFlyBackwards(client: Nuimode, uuid: String): Unit =
+    doAction(flyBackwardsAction, super.onFlyBackwards(client, uuid))
 
-  override def onSwipeRight(uuid: String): Unit = doAction(swipeRightAction, super.onSwipeRight(uuid))
+  override def onFlyTowards(client: Nuimode, uuid: String): Unit =
+    doAction(flyTowardsAction, super.onFlyTowards(client, uuid))
 
-  override def onRelease(uuid: String): Unit = doAction(releaseAction, super.onRelease(uuid))
-
-  override def onFlyBackwards(uuid: String): Unit = doAction(flyBackwardsAction, super.onFlyBackwards(uuid))
-
-  override def onFlyTowards(uuid: String): Unit = doAction(flyTowardsAction, super.onFlyTowards(uuid))
-
-  override def onFlyLeft(uuid: String): Unit = doAction(flyLeftAction, super.onFlyLeft(uuid))
+  override def onFlyLeft(client: Nuimode, uuid: String): Unit =
+    doAction(flyLeftAction, super.onFlyLeft(client, uuid))
 }

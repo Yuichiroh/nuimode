@@ -1,23 +1,27 @@
-# NUIMO manager
+# Nuimode
 
-A Scala library for customizing NUIMO on OSX.
+A Scala library for customizing Nuimo on OSX.
 
-* You can implement your own nuimo event handler for each particular application by extending a `NuimoHandler` trait.
-* You can easily define a flexible action using a powerful Scala language.
-* The library provides some useful methods for sending keystrokes and executing applescript.
+You can implement your own event handler for each particular application by implementing `NuimoHandler` trait.
+The library provides some useful functions for handling Nuimo.
+Currently implemented functions are for
 
-The software includes some example handlers:
+* Reading battery information
+* Typing keystrokes
+* Executing applescripts
+* Handling events of a (multiple-) click, swipes, rotations, and fly actions (incl. height info.)
+* Sending an LED image to Nuimo
+
+The library  includes some example handlers:
 * Volume controller (DefaultHandler)
 * iTunes controller (DefaultHandler)
 * Google chrome YouTube controller (GoogleChromeHandler)
 * Adobe Lightroom controller (LightroomHandler)
 * Microsoft Power Point controller (PowerPointHandler)
 
-The library is implemented using Scala.js and intended for developers using Scala language.
-
 # Setup
 1. Install
-    * [a recent version of Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+    * [A recent version of Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
     * [sbt](http://www.scala-sbt.org/)
     * [node.js](https://nodejs.org/en/)
     * Xcode
@@ -28,13 +32,13 @@ to install [noble: A Node.js BLE (Bluetooth Low Energy)](https://github.com/sand
 # Usage
 On your console,
 
-1. ```cd /path/to/nuimo-manager```
+1. ```cd /path/to/nuimode```
 1. ```cp config/nuimo_config_example.txt config/nuimo_config.txt```
 1. Run ```sbt run```
-1. Turn on your nuimo.
-1. Confirm the UUID of your nuimo on the console.
+1. Turn on your Nuimo.
+1. Confirm the UUID of your Nuimo on the console.
 1. Paste the UUID on `config/nuimo_config.txt`
-1. Type ```Ctrl-C``` to stop nuimo-manager
+1. Type ```Ctrl-C``` to stop Nuimode
 1. Run ```sbt run``` again.
 
 # Advanced Configuration

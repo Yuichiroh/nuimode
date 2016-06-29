@@ -8,7 +8,7 @@ package yuima.nuimo.config
 object NuimoUUID {
 
   object Characteristics {
-    val BATTERY = "00002a1900001000800000805f9b34fb"
+    val BATTERY = "2a19"
     val DEVICE_INFO = "00002a2900001000800000805f9b34fb"
     val LED_MATRIX = "f29b1524cb1940f3be5c7241ecb82fd1"
     val ROTATION = "f29b1528cb1940f3be5c7241ecb82fd2"
