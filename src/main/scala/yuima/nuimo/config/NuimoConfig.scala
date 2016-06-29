@@ -14,9 +14,9 @@ package yuima.nuimo.config
   * as mentioned here:
   * http://stackoverflow.com/questions/17575949/corebluetooth-what-is-the-lifetime-of-unique-uuids/17576559#17576559
   *
-  * @param name     a specific name of the nuimo used for OSX notification.
-  * @param handlers handlers for each application. A key is an application name (i.e., "Google Chrome.app") and
-  *                 a value is a string of [[yuima.nuimo.config.Config.HandlerID]].
-  * @param uuid     peripheral UUID assinged for a pair of (nuimo, your machine)
+  * @param name       a specific name of the nuimo used for OSX notification.
+  * @param handlerIDs handler IDs for each application. A key is an application name (i.e., "Google Chrome.app") and
+  *                   a value is a string of [[yuima.nuimo.config.Config.HandlerID]].
+  * @param uuid       peripheral UUID assinged for a pair of (nuimo, your machine)
   */
-case class NuimoConfig(uuid: String, name: String, handlers: Map[String, String])
+case class NuimoConfig(uuid: String, name: String, handlerIDs: Map[String, String])

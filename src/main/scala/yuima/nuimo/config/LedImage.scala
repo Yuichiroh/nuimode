@@ -2,7 +2,7 @@
 
 package yuima.nuimo.config
 
-case class LedImage(state: Array[Int], brightness: Int = 75, duration: Int = 10) {
+case class LedImage(state: Array[Int], tag:String = "", brightness: Int = 75, duration: Int = 10) {
   def withBrightness(value: Int) = this.copy(brightness = value)
 
   def withDuration(value: Int) = this.copy(duration = value)
@@ -27,7 +27,7 @@ object LedImage {
     0, 0, 1, 1, 0, 1, 1, 0, 0,
     0, 0, 1, 1, 0, 1, 1, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0
-  ))
+  ), "pause")
   val play = LedImage(Array(
     0, 0, 1, 0, 0, 0, 0, 0, 0,
     0, 0, 1, 1, 0, 0, 0, 0, 0,
@@ -38,7 +38,7 @@ object LedImage {
     0, 0, 1, 1, 1, 0, 0, 0, 0,
     0, 0, 1, 1, 0, 0, 0, 0, 0,
     0, 0, 1, 0, 0, 0, 0, 0, 0
-  ))
+  ), "play")
   val youtube = LedImage(Array(
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 0,
@@ -49,7 +49,7 @@ object LedImage {
     1, 1, 1, 0, 1, 1, 1, 1, 1,
     0, 1, 1, 1, 1, 1, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0
-  ))
+  ), "youtube")
   val forward = LedImage(Array(
     0, 0, 1, 0, 0, 0, 0, 1, 0,
     0, 0, 1, 1, 0, 0, 0, 1, 0,
@@ -60,7 +60,7 @@ object LedImage {
     0, 0, 1, 1, 1, 0, 0, 1, 0,
     0, 0, 1, 1, 0, 0, 0, 1, 0,
     0, 0, 1, 0, 0, 0, 0, 1, 0
-  ))
+  ), "fw")
   val backward = LedImage(Array(
     0, 1, 0, 0, 0, 0, 1, 0, 0,
     0, 1, 0, 0, 0, 1, 1, 0, 0,
@@ -71,7 +71,7 @@ object LedImage {
     0, 1, 0, 0, 1, 1, 1, 0, 0,
     0, 1, 0, 0, 0, 1, 1, 0, 0,
     0, 1, 0, 0, 0, 0, 1, 0, 0
-  ))
+  ), "bw")
   val mute = LedImage(Array(
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0,
@@ -82,7 +82,7 @@ object LedImage {
     0, 0, 1, 1, 0, 0, 0, 0, 0,
     0, 0, 0, 1, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0
-  ))
+  ), "mute")
   val unmute = LedImage(Array(
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 1, 0, 0, 0, 1, 0,
@@ -93,7 +93,7 @@ object LedImage {
     0, 0, 1, 1, 0, 1, 0, 0, 1,
     0, 0, 0, 1, 0, 0, 0, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0
-  ))
+  ), "unmute")
   val off = LedImage(Array(
     0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0,

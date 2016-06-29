@@ -14,8 +14,8 @@ object SystemAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def changeVolume(client: Nuimode, uuid: String, delta: Int) = {
-    def changeVolume(value: Int) = {
+  def changeVolume(client: Nuimode, uuid: String, delta: Int): Unit = {
+    def changeVolume(value: Int): Unit = {
       val cmd = s"set volume  $value / 100.0 * 7"
       Nuimode.runAppleScript(cmd)
     }
@@ -55,10 +55,8 @@ object SystemAction {
     val nv = normalizedVolume(volume)
     val nvcv = normalizedVolume(Nuimode.currentVolume)
 
-    if (Nuimode.imgTag != "volume" || nvcv != nv) {
-      client.writeLedImage(uuid, volumeImage(nv))
-      Nuimode.imgTag = "volume"
-    }
+    if (Nuimode.imgTag != "volume" || nvcv != nv)
+      client.writeLedImage(uuid, volumeImage(nv), "volume")
 
     if (volume != Nuimode.currentVolume) {
       changeVolume(volume)

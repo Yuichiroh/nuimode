@@ -54,14 +54,10 @@ object ItunesAction {
   }
 
   def fadeInOut(client: Nuimode, uuid: String, duration: Double = 0.5) = {
-    if (isPlaying) {
+    if (isPlaying)
       client.writeLedImage(uuid, LedImage.pause)
-      Nuimode.imgTag = "pause"
-    }
-    else {
+    else
       client.writeLedImage(uuid, LedImage.play)
-      Nuimode.imgTag = "play"
-    }
 
     val resolution = getSoundVolume min 40
     val cmd = s"""property resolution : $resolution
