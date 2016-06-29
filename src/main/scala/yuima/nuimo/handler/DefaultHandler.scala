@@ -33,7 +33,7 @@ class DefaultHandler extends NuimoHandler {
   }
 
   override def onSwipeUp(client: Nuimode, uuid: String): Unit = {
-    ItunesAction.activate
+    ItunesAction.activate()
   }
 
   override def onSwipeDown(client: Nuimode, uuid: String): Unit = {
@@ -41,7 +41,7 @@ class DefaultHandler extends NuimoHandler {
       client.writeLedImage(uuid, LedImage.unmute)
     else
       client.writeLedImage(uuid, LedImage.mute)
-    SystemAction.mute
+    SystemAction.mute()
   }
 
   override def onRotateLeft(client: Nuimode, uuid: String, velocity: Int) =

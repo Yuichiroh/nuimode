@@ -3,19 +3,21 @@
 package yuima.nuimo.action
 
 import yuima.nuimo.Nuimode
-import yuima.nuimo.Nuimode._
 import yuima.nuimo.config.Config
 import yuima.nuimo.config.LedImage._
+
 import scala.concurrent.duration._
 
 object SystemAction {
+  var currentVolume = SystemAction.getVolume
+
   def sendNotification(message: String, subtitle: String = "", title: String = "Nuimo") = {
     val cmd = s"""display notification "$message" with title "$title" subtitle "$subtitle""""
     Nuimode.runAppleScript(cmd)
   }
 
-  def changeVolume(client: Nuimode, uuid: String, delta: Int) = {
-    def changeVolume(value: Int) = {
+  def changeVolume(client: Nuimode, uuid: String, delta: Int): Unit = {
+    def changeVolume(value: Int): Unit = {
       val cmd = s"set volume  $value / 100.0 * 7"
       Nuimode.runAppleScript(cmd)
     }
@@ -49,20 +51,18 @@ object SystemAction {
     }
 
     if (Nuimode.hasSufficientEventInterval(Config.actionInterval.milli.toNanos * 10))
-      Nuimode.currentVolume = SystemAction.getVolume
+      currentVolume = SystemAction.getVolume
 
-    val volume = ((Nuimode.currentVolume + delta) max 0) min 100
+    val volume = ((currentVolume + delta) max 0) min 100
     val nv = normalizedVolume(volume)
-    val nvcv = normalizedVolume(Nuimode.currentVolume)
+    val nvcv = normalizedVolume(currentVolume)
 
-    if (Nuimode.imgTag != "volume" || nvcv != nv) {
-      client.writeLedImage(uuid, volumeImage(nv))
-      Nuimode.imgTag = "volume"
-    }
+    if (Nuimode.imgTag != "volume" || nvcv != nv)
+      client.writeLedImage(uuid, volumeImage(nv), "volume")
 
-    if (volume != Nuimode.currentVolume) {
+    if (volume != currentVolume) {
       changeVolume(volume)
-      Nuimode.currentVolume = volume
+      currentVolume = volume
     }
   }
 
@@ -83,7 +83,7 @@ object SystemAction {
     Nuimode.runAppleScriptSync(cmd).toBoolean
   }
 
-  def mute = {
+  def mute() = {
     val cmd =
       """set volumeSettings to get volume settings
         |if output muted of volumeSettings is false then

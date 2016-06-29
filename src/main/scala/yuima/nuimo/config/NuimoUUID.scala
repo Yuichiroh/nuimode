@@ -2,9 +2,6 @@
 
 package yuima.nuimo.config
 
-/** @author Yuichiroh Matsubayashi
-  *         Created on 2016/06/16.
-  */
 object NuimoUUID {
 
   object Characteristics {

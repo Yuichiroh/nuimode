@@ -42,7 +42,7 @@ trait NuimoHandler {
 
     action match {
       case NuimoEvent.Click.PRESS =>
-        if (Nuimode.hasSufficientEventInterval(Config.clickInterval.milli.toNanos)) // milli to nano
+        if (Nuimode.hasSufficientEventInterval(Config.clickInterval.milli.toNanos))
           click = 0
         click += 1
         isPressed = true
@@ -54,7 +54,7 @@ trait NuimoHandler {
           Thread.sleep(Config.clickInterval)
           click
         }
-        if (currentClick == Await.result(futureClick, (Config.clickInterval + 20) milli)) {
+        if (currentClick == Await.result(futureClick, (Config.clickInterval + 20).milli)) {
           println(s"click: $currentClick on ${ Nuimode.appName }")
           click = 0
           if (!actionInPressed) onRelease(client, uuid, currentClick)
@@ -145,7 +145,7 @@ trait NuimoHandler {
       case NuimoEvent.Fly.HOVER =>
         val height = data(1)
         if (Nuimode.hasSufficientEventInterval)
-          client.showBatteryStatus(uuid)
+          client.requestBatteryStatus(uuid)
         onFlyHover(client, uuid, height)
     }
   }

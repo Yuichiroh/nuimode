@@ -1,23 +1,22 @@
 # Nuimode
 
-A Scala library for customizing Nuimo on OSX.
+A Scala library for customizing Nuimo devices on OSX.
 
-You can implement your own event handler for each particular application by implementing `NuimoHandler` trait.
+You can implement your own event handler for each particular application by extending `NuimoHandler` trait.
 The library provides some useful functions for handling Nuimo.
-Currently implemented functions are for
 
 * Reading battery information
 * Typing keystrokes
 * Executing applescripts
 * Handling events of a (multiple-) click, swipes, rotations, and fly actions (incl. height info.)
-* Sending an LED image to Nuimo
+* Displaying an LED image
 
-The library  includes some example handlers:
-* Volume controller (DefaultHandler)
-* iTunes controller (DefaultHandler)
-* Google chrome YouTube controller (GoogleChromeHandler)
-* Adobe Lightroom controller (LightroomHandler)
-* Microsoft Power Point controller (PowerPointHandler)
+The library also bundles some example handlers:
+* Volume controller ([DefaultHandler](https://github.com/Yuichiroh/nuimode/blob/master/src/main/scala/yuima/nuimo/handler/DefaultHandler.scala))
+* iTunes controller ([DefaultHandler](https://github.com/Yuichiroh/nuimode/blob/master/src/main/scala/yuima/nuimo/handler/DefaultHandler.scala))
+* Google chrome YouTube controller ([GoogleChromeHandler](https://github.com/Yuichiroh/nuimode/blob/master/src/main/scala/yuima/nuimo/handler/GoogleChromeHandler.scala))
+* Adobe Lightroom controller ([LightroomHandler](https://github.com/Yuichiroh/nuimode/blob/master/src/main/scala/yuima/nuimo/handler/LightroomHandler.scala))
+* Microsoft Power Point controller ([PowerPointHandler](https://github.com/Yuichiroh/nuimode/blob/master/src/main/scala/yuima/nuimo/handler/PowerPointHandler.scala))
 
 # Setup
 1. Install

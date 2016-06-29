@@ -1,9 +1,11 @@
+// Copyright (c) 2016 Yuichiroh Matsubayashi
+
 package yuima.nuimo.config
 
 import yuima.nuimo.handler.{GoogleChromeHandler, LightroomHandler, PowerPointHandler}
 
 /** An object defining mapping between the (string form) IDs of handlers and its actual instances.
-  * The ids of handlers are used to specfiy a handler for each application in a config file.
+  * The ids of handlers are used to specify a handler for each application in a config file.
   */
 object Config {
   /** You need to define a mapping between handler's id and its actual instance. */

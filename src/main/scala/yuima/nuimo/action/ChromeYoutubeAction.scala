@@ -3,7 +3,7 @@
 package yuima.nuimo.action
 
 object ChromeYoutubeAction {
-  def tryPlaypause = {
+  def tryPlayPause = {
     AppleScript(
                  """set foundYoutube to false
                    |tell application "Google Chrome"

@@ -54,7 +54,7 @@ case class KeyCode(key: Key,
 }
 
 case class KeyCodes(keys: Seq[KeyCode]) extends SimpleNuimoAction {
-  override def runScript: Unit = if (keys.nonEmpty) super.runScript
+  override def runScript(): Unit = if (keys.nonEmpty) super.runScript()
 
   def script = "tell application \"System Events\"\n" +
                s"${ keys.map(k => k.action + k.modifierString).mkString("\n") }\n" +

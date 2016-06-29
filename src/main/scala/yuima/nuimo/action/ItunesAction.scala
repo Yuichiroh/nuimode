@@ -6,7 +6,7 @@ import yuima.nuimo.Nuimode
 import yuima.nuimo.config.LedImage
 
 object ItunesAction {
-  def playpause = {
+  def playpause() = {
     val cmd = """tell application "iTunes"
                 |  playpause
                 |end tell
@@ -14,7 +14,7 @@ object ItunesAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def activate = {
+  def activate() = {
     val cmd = """tell application "iTunes"
                 |  activate
                 |end tell
@@ -22,7 +22,7 @@ object ItunesAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def choosePlayListWithActivatingItunes = {
+  def choosePlayListWithActivatingItunes() = {
     val cmd = """set prevApp to (path to frontmost application as text)
                 |
                 |tell application "iTunes"
@@ -36,7 +36,7 @@ object ItunesAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def choosePlayList = {
+  def choosePlayList() = {
     val cmd = """tell application "iTunes"
                 |	 set plists to (get name of playlists as list)
                 |end tell
@@ -54,14 +54,10 @@ object ItunesAction {
   }
 
   def fadeInOut(client: Nuimode, uuid: String, duration: Double = 0.5) = {
-    if (isPlaying) {
+    if (isPlaying)
       client.writeLedImage(uuid, LedImage.pause)
-      Nuimode.imgTag = "pause"
-    }
-    else {
+    else
       client.writeLedImage(uuid, LedImage.play)
-      Nuimode.imgTag = "play"
-    }
 
     val resolution = getSoundVolume min 40
     val cmd = s"""property resolution : $resolution
@@ -128,7 +124,7 @@ object ItunesAction {
     Nuimode.runAppleScript(cmd)
   }
 
-  def notifyCurrentTrack = {
+  def notifyCurrentTrack() = {
     val cmd = """tell application "iTunes"
                 |	 set trackName to name of current track
                 |	 set trackArtist to artist of current track
