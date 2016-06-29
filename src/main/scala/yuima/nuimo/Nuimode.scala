@@ -86,9 +86,6 @@ object Nuimode {
     Props(classOf[Nuimode], remote)
 }
 
-//object Client {
-//}
-
 class Nuimode(remote: InetSocketAddress) extends Actor {
   var connection: ActorRef = _
 
@@ -154,8 +151,6 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
   }
 
   def printBatteryStatus(uuid: String, voltage: Int) = println( s"""Battery: $voltage %""")
-
-  //    nuimo.writeToLEDs(uuid, img.state.toJSArray, img.brightness, img.duration)
 
   def writeLedImage(uuid: String, img: LedImage): Unit = {
     val LedImage(image, brightness, duration) = img
