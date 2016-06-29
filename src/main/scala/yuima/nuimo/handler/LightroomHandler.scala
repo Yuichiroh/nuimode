@@ -2,6 +2,7 @@
 
 package yuima.nuimo.handler
 
+import yuima.nuimo.Nuimode
 import yuima.nuimo.action.{Key, KeyCode, KeyCodes}
 
 /** @author Yuichiroh Matsubayashi
@@ -14,23 +15,23 @@ object LightroomHandler extends DefaultHandler {
   val sliderDelta = 5
   val largeDelta = 20
 
-  override def onSwipeLeft(uuid: String): Unit = {
+  override def onSwipeLeft(client: Nuimode, uuid: String): Unit = {
     KeyCode(Key.LeftArrow).runScript
   }
 
-  override def onSwipeRight(uuid: String): Unit = {
+  override def onSwipeRight(client: Nuimode, uuid: String): Unit = {
     KeyCode(Key.RightArrow).runScript
   }
 
-  override def onSwipeUp(uuid: String): Unit = {
+  override def onSwipeUp(client: Nuimode, uuid: String): Unit = {
     KeyCode(Key.Comma).runScript
   }
 
-  override def onSwipeDown(uuid: String): Unit = {
+  override def onSwipeDown(client: Nuimode, uuid: String): Unit = {
     KeyCode(Key.Period).runScript
   }
 
-  override def onRotateLeft(uuid: String, velocity: Int): Unit = {
+  override def onRotateLeft(client: Nuimode, uuid: String, velocity: Int): Unit = {
     moveSlider(math.abs(velocity), KeyCode(Key.Minus))
   }
 
@@ -45,19 +46,19 @@ object LightroomHandler extends DefaultHandler {
     if (small > 0) KeyCodes(Seq.fill(small)(key.withOpt)).runScript
   }
 
-  override def onPressRotateLeft(uuid: String, velocity: Int): Unit = {
+  override def onPressRotateLeft(client: Nuimode, uuid: String, velocity: Int): Unit = {
     KeyCodes(Seq.fill(math.abs(velocity / 2))(KeyCode(Key.Minus).withShift)).runScript
   }
 
-  override def onRotateRight(uuid: String, velocity: Int): Unit = {
+  override def onRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit = {
     moveSlider(velocity, KeyCode(Key.Equal))
   }
 
-  override def onPressRotateRight(uuid: String, velocity: Int): Unit = {
+  override def onPressRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit = {
     KeyCodes(Seq.fill(velocity / 2)(KeyCode(Key.Equal).withShift)).runScript
   }
 
-  override def onRelease(uuid: String): Unit = {
+  override def onRelease(client: Nuimode, uuid: String): Unit = {
     KeyCode(Key.Period).runScript
   }
 }

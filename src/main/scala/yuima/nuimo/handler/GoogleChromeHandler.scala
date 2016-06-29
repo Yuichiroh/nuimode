@@ -2,7 +2,7 @@
 
 package yuima.nuimo.handler
 
-import yuima.nuimo.NuimoManager
+import yuima.nuimo.Nuimode
 import yuima.nuimo.action.ChromeYoutubeAction
 import yuima.nuimo.config.LedImage
 
@@ -10,30 +10,30 @@ import yuima.nuimo.config.LedImage
   *         Created on 2016/06/20.
   */
 object GoogleChromeHandler extends DefaultHandler {
-  override def onRelease(uuid: String) = {
+  override def onRelease(client: Nuimode, uuid: String) = {
     println("chrome release")
     val success = ChromeYoutubeAction.tryPlaypause
     if (success)
-      NuimoManager.writeLedImage(uuid, LedImage.youtube)
+      client.writeLedImage(uuid, LedImage.youtube)
     else
-      super.onRelease(uuid)
+      super.onRelease(client, uuid)
   }
 
-  override def onSwipeRight(uuid: String): Unit = {
+  override def onSwipeRight(client: Nuimode, uuid: String): Unit = {
     println("chrome sr")
     val success = ChromeYoutubeAction.tryNextTrack
     if (success)
-      NuimoManager.writeLedImage(uuid, LedImage.forward)
+      client.writeLedImage(uuid, LedImage.forward)
     else
-      super.onSwipeRight(uuid)
+      super.onSwipeRight(client, uuid)
   }
 
-  override def onSwipeLeft(uuid: String): Unit = {
+  override def onSwipeLeft(client: Nuimode, uuid: String): Unit = {
     println("chrome sl")
     val success = ChromeYoutubeAction.tryPrevTrack
     if (success)
-      NuimoManager.writeLedImage(uuid, LedImage.backward)
+      client.writeLedImage(uuid, LedImage.backward)
     else
-      super.onSwipeLeft(uuid)
+      super.onSwipeLeft(client, uuid)
   }
 }
