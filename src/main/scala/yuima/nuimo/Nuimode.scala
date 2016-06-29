@@ -3,7 +3,7 @@
 package yuima.nuimo
 
 import java.net.InetSocketAddress
-import javax.script.ScriptEngineManager
+import java.util.concurrent.Executors
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.io.Tcp._
@@ -13,14 +13,14 @@ import yuima.nuimo.action.SystemAction
 import yuima.nuimo.config.Config.HandlerID
 import yuima.nuimo.config.{Config, LedImage, NuimoConfig, NuimoUUID}
 
+import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
+import scala.concurrent.duration._
 
 object Nuimode {
   type OptionMap = Map[Symbol, Any]
   val system = ActorSystem.create()
-  val se = (new ScriptEngineManager).getEngineByName("AppleScript")
 
-  val actionInterval = 2e8
   val uuid2config =
     upickle.default.read[Seq[NuimoConfig]](Source.fromFile("config/nuimo_config.json").getLines().mkString("\n"))
     .map(config => config.uuid -> config).toMap
@@ -75,11 +75,11 @@ object Nuimode {
   }
 
   def hasSufficientEventInterval: Boolean = {
-    System.nanoTime() - lastEventTimeStamp > actionInterval
+    System.nanoTime() - lastEventTimeStamp > Config.actionInterval.milli.toNanos
   }
 
-  def hasSufficientEventInterval(interval: Double): Boolean = {
-    System.nanoTime() - lastEventTimeStamp > interval
+  def hasSufficientEventInterval(nanoTime: Long): Boolean = {
+    System.nanoTime() - lastEventTimeStamp > nanoTime
   }
 
   def props(remote: InetSocketAddress) =
@@ -91,6 +91,8 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
 
   import Nuimode._
   import context.system
+
+  implicit val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(Config.numThreadPool))
 
   IO(Tcp) ! Connect(remote)
 
@@ -137,17 +139,20 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
       ))
 
     import NuimoUUID._
-    serviceUUID match {
-      case Characteristics.BUTTON_CLICK => pHandler.onClick(this, peripheralUUID, data)
-      case Characteristics.ROTATION => pHandler.onRotate(this, peripheralUUID, data)
-      case Characteristics.SWIPE => pHandler.onSwipe(this, peripheralUUID, data)
-      case Characteristics.FLY => pHandler.onFly(this, peripheralUUID, data)
-      case Characteristics.BATTERY => printBatteryStatus(peripheralUUID, data(0))
-      case Events.CONNECTED => pHandler.onConnect(peripheralUUID)
-      case Events.DISCONNECTED => pHandler.onDisconnect(peripheralUUID)
-      case _ =>
+
+    Future {
+      serviceUUID match {
+        case Characteristics.BUTTON_CLICK => pHandler.onClick(this, peripheralUUID, data)
+        case Characteristics.ROTATION => pHandler.onRotate(this, peripheralUUID, data)
+        case Characteristics.SWIPE => pHandler.onSwipe(this, peripheralUUID, data)
+        case Characteristics.FLY => pHandler.onFly(this, peripheralUUID, data)
+        case Characteristics.BATTERY => printBatteryStatus(peripheralUUID, data(0))
+        case Events.CONNECTED => pHandler.onConnect(peripheralUUID)
+        case Events.DISCONNECTED => pHandler.onDisconnect(peripheralUUID)
+        case _ =>
+      }
+      lastEventTimeStamp = System.nanoTime()
     }
-    lastEventTimeStamp = System.nanoTime()
   }
 
   def printBatteryStatus(uuid: String, voltage: Int) = println( s"""Battery: $voltage %""")
@@ -160,7 +165,7 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
   def writeLedImage(uuid: String, img: Seq[Int], brightness: Int = 75, duration: Int = 10): Unit =
     send(s"$uuid:led:${ img.mkString("") }:$brightness:$duration")
 
-  def showBatteryStatus(uuid: String) = send(s"$uuid:battery")
-
   def send(data: String) = connection ! Write(ByteString(data))
+
+  def showBatteryStatus(uuid: String) = send(s"$uuid:battery")
 }

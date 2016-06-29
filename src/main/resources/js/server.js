@@ -95,6 +95,7 @@ class Nuimo {
 
         conn.on('close', () => {
             console.log('server-> client closed connection');
+            that.connect = null;
             noble.startScanning(['180F', '180A'], false);
         });
     }

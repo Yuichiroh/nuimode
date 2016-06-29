@@ -10,7 +10,7 @@ object PowerPointHandler extends DefaultHandler {
   override val rightRotationSensitivity: Int = 50
   var _isSlideShowMode = false
 
-  override def onRelease(client:Nuimode, uuid: String): Unit = {
+  override def onRelease(client:Nuimode, uuid: String, clickCount: Int): Unit = {
     isSlideShowMode match {
       case true => KeyCode(Key.RightArrow).runScript
       case false => KeyCode(Key.Return).withCmd.runScript
