@@ -1,12 +1,18 @@
-# NUIMO manager
+# Nuimode
 
-A Scala library for customizing NUIMO on OSX.
+A Scala library for customizing Nuimo on OSX.
 
 You can implement your own event handler for each particular application by implementing `NuimoHandler` trait.
-The library also provides useful methods for sending keystrokes and executing applescript.
-The library is implemented using Scala.js and intended for developers using Scala language.
+The library provides some useful functions for handling Nuimo.
+Currently implemented functions are for
 
-The software includes some example handlers:
+* Reading battery information
+* Typing keystrokes
+* Executing applescripts
+* Handling events of a (multiple-) click, swipes, rotations, and fly actions (incl. height info.)
+* Sending an LED image to Nuimo
+
+The library  includes some example handlers:
 * Volume controller (DefaultHandler)
 * iTunes controller (DefaultHandler)
 * Google chrome YouTube controller (GoogleChromeHandler)
@@ -26,13 +32,13 @@ to install [noble: A Node.js BLE (Bluetooth Low Energy)](https://github.com/sand
 # Usage
 On your console,
 
-1. ```cd /path/to/nuimo-manager```
+1. ```cd /path/to/nuimode```
 1. ```cp config/nuimo_config_example.txt config/nuimo_config.txt```
 1. Run ```sbt run```
-1. Turn on your nuimo.
-1. Confirm the UUID of your nuimo on the console.
+1. Turn on your Nuimo.
+1. Confirm the UUID of your Nuimo on the console.
 1. Paste the UUID on `config/nuimo_config.txt`
-1. Type ```Ctrl-C``` to stop nuimo-manager
+1. Type ```Ctrl-C``` to stop Nuimode
 1. Run ```sbt run``` again.
 
 # Advanced Configuration

@@ -62,5 +62,5 @@ class DefaultHandler extends NuimoHandler {
 
   override def onFlyBackwards(client: Nuimode, uuid: String): Unit = {}
 
-  override def onFlyHover(client: Nuimode, uuid: String): Unit = {}
+  override def onFlyHover(client: Nuimode, uuid: String, height: Int): Unit = {}
 }

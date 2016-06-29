@@ -181,8 +181,6 @@ class Nuimo {
             else return noble.stopScanning();
         });
 
-        console.log("init", uuids);
-
         noble.on('discover', p => {
             console.log('Found device with local name: ' + p.advertisement.localName);
             console.log('├ uuid: ' + p.uuid);

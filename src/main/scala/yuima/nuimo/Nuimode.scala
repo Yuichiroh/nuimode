@@ -13,9 +13,10 @@ import yuima.nuimo.action.SystemAction
 import yuima.nuimo.config.Config.HandlerID
 import yuima.nuimo.config.{Config, LedImage, NuimoConfig, NuimoUUID}
 
+import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.io.Source
-import scala.concurrent.duration._
+import scala.sys.process._
 
 object Nuimode {
   type OptionMap = Map[Symbol, Any]
@@ -44,9 +45,7 @@ object Nuimode {
   }
 
   def main(args: Array[String]): Unit = {
-    println("Nuimo Manager")
     val options = nextOption(defalultOptions, args.toList)
-    //    val options = defalultOptions
 
     val port = options.get('port) match {
       case Some(p) => p.asInstanceOf[Int]
@@ -57,8 +56,9 @@ object Nuimode {
       case None => "localhost"
     }
 
-    Console.err.println(address, port)
-
+    Console.err.println("Nuimo Manager")
+    Console.err.println(s"listening on $address:$port")
+    "node src/main/resources/js/server.js".run
     val client = system.actorOf(Props(classOf[Nuimode], new InetSocketAddress(address, port)))
   }
 
@@ -87,20 +87,21 @@ object Nuimode {
 }
 
 class Nuimode(remote: InetSocketAddress) extends Actor {
-  var connection: ActorRef = _
+  implicit val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(Config.numThreadPool))
 
   import Nuimode._
   import context.system
 
-  implicit val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(Config.numThreadPool))
+  var connection: ActorRef = _
 
   IO(Tcp) ! Connect(remote)
 
   def receive = {
     case CommandFailed(_: Connect) =>
-      sys.error("connect failed")
-      context stop self
-      system.terminate()
+      //      sys.error("connect failed")
+//      context stop self
+//      system.terminate()
+      IO(Tcp) ! Connect(remote)
     case c@Connected(_remote, local) =>
       connection = sender
       connection ! Register(self)
@@ -165,7 +166,7 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
   def writeLedImage(uuid: String, img: Seq[Int], brightness: Int = 75, duration: Int = 10): Unit =
     send(s"$uuid:led:${ img.mkString("") }:$brightness:$duration")
 
-  def send(data: String) = connection ! Write(ByteString(data))
-
   def showBatteryStatus(uuid: String) = send(s"$uuid:battery")
+
+  def send(data: String) = connection ! Write(ByteString(data))
 }

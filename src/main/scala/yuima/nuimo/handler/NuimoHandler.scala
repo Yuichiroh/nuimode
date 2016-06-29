@@ -34,8 +34,8 @@ trait NuimoHandler {
     SystemAction.sendNotification(name, "Disconnected.")
   }
 
-  final def onClick(client: Nuimode, uuid: String, data: Any) = {
-    val signal = data.asInstanceOf[Array[Int]](0)
+  final def onClick(client: Nuimode, uuid: String, data: Array[Int]) = {
+    val signal = data(0)
     val action = NuimoEvent.Click(signal)
 
     implicit val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(Config.numThreadPool))
@@ -55,7 +55,7 @@ trait NuimoHandler {
           click
         }
         if (currentClick == Await.result(futureClick, (Config.clickInterval + 20) milli)) {
-          println(s"click: $currentClick on ${Nuimode.appName}")
+          println(s"click: $currentClick on ${ Nuimode.appName }")
           click = 0
           if (!actionInPressed) onRelease(client, uuid, currentClick)
           else actionInPressed = false
@@ -67,8 +67,8 @@ trait NuimoHandler {
 
   def onRelease(client: Nuimode, uuid: String, clickCount: Int): Unit
 
-  final def onSwipe(client: Nuimode, uuid: String, data: Any) = {
-    val signal = data.asInstanceOf[Array[Int]](0)
+  final def onSwipe(client: Nuimode, uuid: String, data: Array[Int]) = {
+    val signal = data(0)
     val direction = NuimoEvent.Swipe(signal)
 
     direction match {
@@ -87,7 +87,7 @@ trait NuimoHandler {
 
   def onSwipeDown(client: Nuimode, uuid: String): Unit
 
-  final def onRotate(client: Nuimode, uuid: String, data: Any) = {
+  final def onRotate(client: Nuimode, uuid: String, data: Array[Int]) = {
     val signals = data.asInstanceOf[Array[Int]]
     val velocity = signals(0) - signals(1)
     val direction =
@@ -134,8 +134,8 @@ trait NuimoHandler {
 
   def onPressRotateRight(client: Nuimode, uuid: String, velocity: Int): Unit
 
-  final def onFly(client: Nuimode, uuid: String, data: Any) = {
-    val signal = data.asInstanceOf[Array[Int]](0)
+  final def onFly(client: Nuimode, uuid: String, data: Array[Int]) = {
+    val signal = data(0)
     val direction = NuimoEvent.Fly(signal)
     direction match {
       case NuimoEvent.Fly.LEFT => onFlyLeft(client, uuid)
@@ -143,9 +143,10 @@ trait NuimoHandler {
       case NuimoEvent.Fly.BACKWARDS => onFlyBackwards(client, uuid)
       case NuimoEvent.Fly.TOWARDS => onFlyTowards(client, uuid)
       case NuimoEvent.Fly.HOVER =>
+        val height = data(1)
         if (Nuimode.hasSufficientEventInterval)
           client.showBatteryStatus(uuid)
-        onFlyHover(client, uuid)
+        onFlyHover(client, uuid, height)
     }
   }
 
@@ -157,5 +158,5 @@ trait NuimoHandler {
 
   def onFlyTowards(client: Nuimode, uuid: String): Unit
 
-  def onFlyHover(client: Nuimode, uuid: String): Unit
+  def onFlyHover(client: Nuimode, uuid: String, height: Int): Unit
 }
