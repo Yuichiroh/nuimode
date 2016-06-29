@@ -23,15 +23,14 @@ object Nuimode {
   type OptionMap = Map[Symbol, Any]
 
   val system = ActorSystem.create()
-  val uuid2config = readConfigFile
+  val uuid2config = getConfigsFromFile
   val uuids = uuid2config.keys
-  var lastEventTimeStamp = System.nanoTime()
-  var currentVolume = SystemAction.getVolume
+  private var lastEventTimeStamp = System.nanoTime()
   private var _imgTag: String = ""
   private var _appName = SystemAction.getActiveAppName
 
   def main(args: Array[String]): Unit = {
-    val options = nextOption(defalultOptions, args.toList)
+    val options = nextOption(defaultOptions, args.toList)
 
     val port = options.get('port) match {
       case Some(p) => p.asInstanceOf[Int]
@@ -46,7 +45,7 @@ object Nuimode {
     Console.err.println(s"listening on $address:$port")
     "node src/main/resources/js/server.js".run
 
-    val client = system.actorOf(Props(classOf[Nuimode], new InetSocketAddress(address, port)))
+    system.actorOf(Props(classOf[Nuimode], new InetSocketAddress(address, port)))
   }
 
   def runAppleScriptSync(script: String): String =
@@ -66,9 +65,7 @@ object Nuimode {
 
   def imgTag = _imgTag
 
-  private def props(remote: InetSocketAddress) = Props(classOf[Nuimode], remote)
-
-  private def readConfigFile: Map[String, NuimoConfig] = {
+  private def getConfigsFromFile: Map[String, NuimoConfig] = {
     upickle.default.read[Seq[NuimoConfig]](
       Source.fromFile("config/nuimo_config.json").getLines().mkString("\n")
     ).map(config => config.uuid -> config).toMap
@@ -86,7 +83,7 @@ object Nuimode {
       map
   }
 
-  private def defalultOptions: OptionMap = Map()
+  private def defaultOptions: OptionMap = Map()
 }
 
 class Nuimode(remote: InetSocketAddress) extends Actor {
