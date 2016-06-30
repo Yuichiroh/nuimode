@@ -26,6 +26,7 @@ The library also bundles some example handlers:
     * Xcode
 1. Then, run ```npm install noble```
 to install [noble: A Node.js BLE (Bluetooth Low Energy)](https://github.com/sandeepmistry/noble) library.
+1. ```npm rebuild```
 1. Clone this library.
 
 # Usage
