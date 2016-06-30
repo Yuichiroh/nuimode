@@ -22,7 +22,7 @@ The library also bundles some example handlers:
 1. Install
     * [A recent version of Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
     * [sbt](http://www.scala-sbt.org/)
-    * [node.js](https://nodejs.org/en/)
+    * [node.js](https://nodejs.org/en/) (v6.2.2+)
     * Xcode
 1. Then, run ```npm install noble```
 to install [noble: A Node.js BLE (Bluetooth Low Energy)](https://github.com/sandeepmistry/noble) library.
