@@ -6,9 +6,6 @@ import yuima.nuimo.Nuimode
 import yuima.nuimo.action.ChromeYoutubeAction
 import yuima.nuimo.config.LedImage
 
-/** @author Yuichiroh Matsubayashi
-  *         Created on 2016/06/20.
-  */
 object GoogleChromeHandler extends DefaultHandler {
   override def onRelease(client: Nuimode, uuid: String, clickCount: Int) = {
     println("chrome release")

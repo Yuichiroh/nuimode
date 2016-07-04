@@ -5,9 +5,6 @@ package yuima.nuimo.handler
 import yuima.nuimo.Nuimode
 import yuima.nuimo.action.SimpleNuimoAction
 
-/** @author Yuichiroh Matsubayashi
-  *         Created on 2016/06/17.
-  */
 trait SimpleHandler extends DefaultHandler {
   val pressAction: Option[Seq[SimpleNuimoAction]] = None
   val releaseAction: Option[Seq[SimpleNuimoAction]] = None

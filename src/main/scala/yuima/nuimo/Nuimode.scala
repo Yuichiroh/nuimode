@@ -92,7 +92,7 @@ class Nuimode(remote: InetSocketAddress) extends Actor {
   import Nuimode._
   import context.system
 
-  var connection: ActorRef = _
+  private var connection: ActorRef = _
 
   IO(Tcp) ! Connect(remote)
 

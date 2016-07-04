@@ -5,9 +5,6 @@ package yuima.nuimo.handler
 import yuima.nuimo.Nuimode
 import yuima.nuimo.action.{Key, KeyCode, KeyCodes}
 
-/** @author Yuichiroh Matsubayashi
-  *         Created on 2016/06/17.
-  */
 object LightroomHandler extends DefaultHandler {
   override val leftRotationSensitivity: Int = 20
   override val rightRotationSensitivity: Int = 20
