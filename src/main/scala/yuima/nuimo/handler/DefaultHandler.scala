@@ -12,7 +12,7 @@ class DefaultHandler extends NuimoHandler {
   override val rightRotationSensitivity: Int = 12
   override val actionSpeed: Int = 10
 
-  var fading = false
+  private var fading = false
 
   override def onPress(client: Nuimode, uuid: String) = {}
 
