@@ -1,0 +1,29 @@
+[
+  {
+    "uuid": "53bb2c2ec6024f91881d9ffb556d66f8",
+    "name": "Left-hand Nuimo",
+    "handlerIDs": {
+      "Microsoft PowerPoint.app": "PowerPoint",
+      "Google Chrome.app": "GoogleChrome",
+      "Adobe Lightroom.app": "Lightroom"
+    }
+  },
+  {
+    "uuid": "1f38cea29a6d416696e3f0f68026bd3d",
+    "name": "Right-hand Nuimo on MBA",
+    "handlerIDs": {
+      "Microsoft PowerPoint.app": "PowerPoint",
+      "Google Chrome.app": "GoogleChrome",
+      "Adobe Lightroom.app": "Lightroom"
+    }
+  },
+  {
+    "uuid": "73c3d1f189b84062853a68c48925c8a1",
+    "name": "Right-hand Nuimo on Mac",
+    "handlerIDs": {
+      "Microsoft PowerPoint.app": "PowerPoint",
+      "Google Chrome.app": "GoogleChrome",
+      "Adobe Lightroom.app": "Lightroom"
+    }
+  }
+]
