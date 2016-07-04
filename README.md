@@ -83,4 +83,3 @@ Finally, you assign the application name to the handler on `config/nuimo_config.
 Some JS scripts used in the library are forked from the following projects.
 
 * https://github.com/brendonparker/nuimo-node-demo
-<!-- * https://github.com/TooTallNate/node-applescript -->
