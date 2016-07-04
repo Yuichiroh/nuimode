@@ -20,7 +20,7 @@ The library also bundles some example handlers:
 
 # Setup
 1. Install
-    * [A recent version of Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+    * [a recent version of Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
     * [sbt](http://www.scala-sbt.org/)
     * [node.js](https://nodejs.org/en/) (v6.2.2+)
     * Xcode
@@ -83,4 +83,4 @@ Finally, you assign the application name to the handler on `config/nuimo_config.
 Some JS scripts used in the library are forked from the following projects.
 
 * https://github.com/brendonparker/nuimo-node-demo
-* https://github.com/TooTallNate/node-applescript
+<!-- * https://github.com/TooTallNate/node-applescript -->
