@@ -53,11 +53,11 @@ class Nuimo {
             FLY: 'f29b1526cb1940f3be5c7241ecb82fd2'
         };
 
-        this.EVENTS = { CONNECTED: 'Connected', DISCONNECTED: 'Disconnected'
+        this.EVENTS = {
+            CONNECTED: 'Connected', DISCONNECTED: 'Disconnected'
         };
 
         this.server = net.createServer(conn => this.server_hander(conn));
-
         this.server.listen(port);
     }
 
@@ -68,29 +68,23 @@ class Nuimo {
     }
 
     writeToLEDs(uuid, data, brightness, duration) {
-        if (this.ledMatrix[uuid]) {
+        if (this.ledMatrix[uuid])
             this.ledMatrix[uuid].write(this.createDataForLedMatrix(data, brightness, duration));
-        } else {
+        else
             console.log("Can't writeToLEDs yet.")
-        }
     }
 
     server_hander(conn) {
         console.log('server-> tcp server created');
-        // conn.write("connected");
         this.connect = conn;
         let that = this;
         this.ps.forEach((p, i, arr) => that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED));
         conn.on('data', (data) => {
-            // console.log('server-> ' + data + ' from ' + conn.remoteAddress + ':' + conn.remotePort);
-            // conn.write('server -> Repeating: ' + data);
             let fields = data.toString().split(":");
-            if (fields[1] === "led") {
+            if (fields[1] === "led")
                 that.writeToLEDs(fields[0], fields[2], parseInt(fields[3]), parseInt(fields[4]))
-            }
-            else {
+            else
                 that.batteryStatus(fields[0]);
-            }
         });
 
         conn.on('close', () => {
@@ -101,9 +95,7 @@ class Nuimo {
     }
 
     disconnect() {
-        this.ps.forEach((p, i, arr) =>
-            p.disconnect()
-        );
+        this.ps.forEach((p, i, arr) => p.disconnect());
         this.ps = [];
         this.connect = null;
         noble.startScanning(['180F', '180A'], false);
@@ -112,30 +104,18 @@ class Nuimo {
     sendToNuimode(pid, sid, data) {
         if (this.connect) {
             let msg;
-            if (data) {
-                let info = JSON.parse(JSON.stringify(data));
-                if (info instanceof Object) {
-                    info = info["data"];
-                }
-                else info = [info];
-                msg = JSON.stringify({"pId": pid, "sId": sid, "data": info});
-            }
-            else {
+            if (data)
+                msg = JSON.stringify({"pId": pid, "sId": sid, "data": data});
+            else
                 msg = JSON.stringify({"pId": pid, "sId": sid, "data": []});
-            }
-            // console.log(msg);
             this.connect.write(msg + ";");
         }
     }
 
     batteryStatus(uuid) {
         let that = this;
-        if (this.battery[uuid]) {
-            this.battery[uuid].read((error, data) =>
-                    data[0]
-                // that.sendToNuimode(uuid, that.CHARACTERISTICS.BATTERY, data[0])
-            );
-        }
+        if (this.battery[uuid])
+            this.battery[uuid].read((error, data) => data[0]);
         else
             that.sendToNuimode(uuid, that.CHARACTERISTICS.BATTERY, 0);
     }
@@ -146,11 +126,11 @@ class Nuimo {
         }
 
         let strData = '';
-        if (data instanceof Array) {
+        if (data instanceof Array)
             strData = data.join('');
-        } else {
+        else
             strData = data;
-        }
+
         let tempArr = strData.split('').filter(x => x === '1' || x === '0');
 
         if (strData.length != 81)
@@ -201,18 +181,37 @@ class Nuimo {
                                         that.battery[p.uuid] = c;
                                         that.batteryStatus(p.uuid);
                                     }
-                                    if (c.properties.indexOf('notify') > -1) {
+                                    else if (c.uuid === that.CHARACTERISTICS.SWIPE) {
                                         c.on('read', (data, isNotification) => {
-                                            that.sendToNuimode(p.uuid, c.uuid, data);
+                                            that.sendToNuimode(p.uuid, c.uuid, [data[0]]);
                                         });
                                         c.notify(true);
-                                    } else if (c.properties.indexOf('write') > -1) {
-                                        that.sendToNuimode(p.uuid, c.uuid);
+                                    }
+                                    else if (c.uuid === that.CHARACTERISTICS.BUTTON_CLICK) {
+                                        c.on('read', (data, isNotification) => {
+                                            that.sendToNuimode(p.uuid, c.uuid, [data[0]]);
+                                        });
+                                        c.notify(true);
+                                    }
+                                    else if (c.uuid === that.CHARACTERISTICS.ROTATION) {
+                                        c.on('read', (data, isNotification) => {
+                                            let velocity = data.readInt16LE();
+                                            that.sendToNuimode(p.uuid, c.uuid, [velocity]);
+                                        });
+                                        c.notify(true);
+                                    }
+                                    else if (c.uuid === that.CHARACTERISTICS.FLY) {
+                                        c.on('read', (data, isNotification) => {
+                                            that.sendToNuimode(p.uuid, c.uuid, [data[0], data[1]]);
+                                        });
+                                        c.notify(true);
                                     }
                                 });
                             });
                         }
-                    }); that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED);that.ps.push(p);
+                    });
+                    that.sendToNuimode(p.uuid, that.EVENTS.CONNECTED);
+                    that.ps.push(p);
                 });
             }
             let puuid = p.uuid;
