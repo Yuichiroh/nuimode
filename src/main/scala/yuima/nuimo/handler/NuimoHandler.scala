@@ -88,11 +88,10 @@ trait NuimoHandler {
   def onSwipeDown(client: Nuimode, uuid: String): Unit
 
   final def onRotate(client: Nuimode, uuid: String, data: Array[Int]) = {
-    val signals = data.asInstanceOf[Array[Int]]
-    val velocity = signals(0) - signals(1)
+    val velocity = data(0)
     val direction =
-      if (signals(1) == 255) NuimoEvent.Rotate.LEFT
-      else NuimoEvent.Rotate.RIGHT
+      if (velocity > 0) NuimoEvent.Rotate.RIGHT
+      else NuimoEvent.Rotate.LEFT
 
     if (Nuimode.hasSufficientEventInterval) totalVelocity = 0
     totalVelocity += velocity
