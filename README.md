@@ -1,6 +1,6 @@
 # Nuimode
 
-A Scala library for customizing Nuimo devices on OSX.
+A library for customizing Nuimo devices on OSX.
 
 You can implement your own event handler for each particular application by extending `NuimoHandler` trait.
 The library provides some useful functions for handling Nuimo.
