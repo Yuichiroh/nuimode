@@ -1,4 +1,6 @@
 # Nuimode
+> if you use MacOX mojave, you need to modify some noble codes a bit.
+> See this issue for the details: https://github.com/noble/noble/pull/804
 
 A library for customizing Nuimo devices on OSX.
 
