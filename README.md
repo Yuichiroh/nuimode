@@ -2,9 +2,6 @@
 
 A library for customizing the Nuimo device on OSX.
 
-> if you use MacOX mojave, you need to modify some noble codes.
-> See this issue for the details: https://github.com/noble/noble/pull/804
-
 You can implement your own event handler for each particular application by extending `NuimoHandler` trait.
 The library provides some useful functions for handling Nuimo.
 
