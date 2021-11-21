@@ -1,6 +1,6 @@
 # Nuimode
 
-A library for customizing Nuimo devices on OSX.
+A library for customizing the Nuimo device on OSX.
 
 > if you use MacOX mojave, you need to modify some noble codes.
 > See this issue for the details: https://github.com/noble/noble/pull/804
@@ -27,8 +27,8 @@ The library also bundles some example handlers:
     * [sbt](http://www.scala-sbt.org/)
     * [node.js](https://nodejs.org/en/) (v6.2.2+)
     * Xcode
-1. Then, run ```npm install noble```
-to install [noble: A Node.js BLE (Bluetooth Low Energy)](https://github.com/sandeepmistry/noble) library.
+1. Then, run ```npm install @abandonware/noble```
+to install [noble: A Node.js BLE (Bluetooth Low Energy)](https://github.com/abandonware/noble#installing-and-using-the-package) library.
 1. ```npm rebuild```
 1. Clone this library.
 

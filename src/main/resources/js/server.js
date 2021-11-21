@@ -25,7 +25,8 @@
  */
 
 var net = require('net');
-var noble = require('noble');
+// var noble = require('noble');
+const noble = require('@abandonware/noble');
 var fs = require('fs');
 var port = 3000;
 

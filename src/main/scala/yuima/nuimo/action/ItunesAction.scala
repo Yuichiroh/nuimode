@@ -7,7 +7,7 @@ import yuima.nuimo.config.LedImage
 
 object ItunesAction {
   def playpause() = {
-    val cmd = """tell application "iTunes"
+    val cmd = """tell application "Music"
                 |  playpause
                 |end tell
               """.stripMargin
@@ -15,7 +15,7 @@ object ItunesAction {
   }
 
   def activate() = {
-    val cmd = """tell application "iTunes"
+    val cmd = """tell application "Music"
                 |  activate
                 |end tell
               """.stripMargin
@@ -25,7 +25,7 @@ object ItunesAction {
   def choosePlayListWithActivatingItunes() = {
     val cmd = """set prevApp to (path to frontmost application as text)
                 |
-                |tell application "iTunes"
+                |tell application "Music"
                 |  activate
                 |  set shuffle enabled to true
                 |	 play playlist (item 1 of (choose from list (get name of playlists as list)))
@@ -37,7 +37,7 @@ object ItunesAction {
   }
 
   def choosePlayList() = {
-    val cmd = """tell application "iTunes"
+    val cmd = """tell application "Music"
                 |	 set plists to (get name of playlists as list)
                 |end tell
                 |
@@ -45,7 +45,7 @@ object ItunesAction {
                 |choose from list (plists) with prompt "Choose a playlist"
                 |
                 |if result is not false then
-                |	 tell application "iTunes"
+                |	 tell application "Music"
                 |    play playlist (item 1 of result)
                 |  end tell
                 |end if
@@ -62,7 +62,7 @@ object ItunesAction {
     val resolution = getSoundVolume min 40
     val cmd = s"""property resolution : $resolution
                   |property delayIncr : ${ duration / resolution }
-                  |tell application "iTunes"
+                  |tell application "Music"
                   |  set originalVol to sound volume
                   |  set volIncr to originalVol div resolution
                   |  if player state is not playing then
@@ -88,14 +88,14 @@ object ItunesAction {
   }
 
   def getSoundVolume = {
-    Nuimode.runAppleScriptSync( """tell application "iTunes"
+    Nuimode.runAppleScriptSync( """tell application "Music"
                                   |	 return sound volume
                                   |end tell
                                 """.stripMargin).toInt
   }
 
   def isPlaying = {
-    val cmd = """tell application "iTunes"
+    val cmd = """tell application "Music"
                 |  if player state is playing then
                 |    return true
                 |  else
@@ -108,7 +108,7 @@ object ItunesAction {
 
   def prevTrack(client: Nuimode, uuid: String) = {
     client.writeLedImage(uuid, LedImage.backward)
-    val cmd = """tell application "iTunes"
+    val cmd = """tell application "Music"
                 |  back track
                 |end tell
               """.stripMargin
@@ -117,7 +117,7 @@ object ItunesAction {
 
   def nextTrack(client: Nuimode, uuid: String) = {
     client.writeLedImage(uuid, LedImage.forward)
-    val cmd = """tell application "iTunes"
+    val cmd = """tell application "Music"
                 |      next track
                 |end tell
               """.stripMargin
@@ -125,7 +125,7 @@ object ItunesAction {
   }
 
   def notifyCurrentTrack() = {
-    val cmd = """tell application "iTunes"
+    val cmd = """tell application "Music"
                 |	 set trackName to name of current track
                 |	 set trackArtist to artist of current track
                 |	 set trackAlbum to album of current track
